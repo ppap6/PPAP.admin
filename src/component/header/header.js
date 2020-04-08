@@ -1,21 +1,22 @@
 import React from 'react';
-import './header.css';
+// import './header.css';
+import styles from './header.styl';
 
 class Header extends React.Component {
     render() {
         return (
-            <div className="header">
-                <div className="container">
-                    <div className="header-left">
-                        <img className="logo" src={require("../../common/img/logo.png")} alt />
+            <div className={styles.header}>
+                <div className={styles.container}>
+                    <div className={styles.headerLeft}>
+                        <img className={styles.logo} src={require("../../common/img/logo.png")} alt />
                         <div>
                             <a>
-                                <img className="search-icon" src={require("../../common/img/search.png")} alt />
+                                <img className={styles.searchIcon} src={require("../../common/img/search.png")} alt />
                             </a>
-                            <input className="search-input" type="text" v-model="keywords" placeholder="搜索" />
+                            <input className={styles.searchInput} type="text" v-model="keywords" placeholder="搜索" />
                         </div>
                     </div>
-                    <div className="header-right">
+                    <div className={styles.headerRight}>
                         <ul>
                             <li>
                                 <router-link to="/follow">关注</router-link>
@@ -27,7 +28,7 @@ class Header extends React.Component {
                                 <router-link to="/notice">通知</router-link>
                             </li>
                             <li>
-                                <img className="avatar" src="avatar" alt />
+                                <img className={styles.avatar} src="avatar" alt />
                                 <span>lixianjie</span>
 
                             </li>

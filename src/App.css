@@ -1,7 +1,41 @@
 @import '~antd/dist/antd.css';
 .App {
-  text-align: center;
+  /* text-align: center; */
 }
+
+.header{
+  /* position: fixed;
+  top: 0;
+  left: 0;
+  right: 0; */
+  height: 48px;
+}
+
+.main{
+  position: relative;
+  top: 56px;
+  height: calc(100vh - 56px);
+  /* margin-top: 56px; */
+  display: flex;
+  justify-content: space-between;
+  align-items: top;
+}
+
+.sider{
+  width: 256px;
+  height: 100%;
+}
+
+.content{
+  width: calc( 100vw - 256px);
+  height: 100%;
+  display: flex;
+}
+
+
+
+
+
 
 .App-logo {
   height: 40vmin;
@@ -37,3 +71,6 @@
     transform: rotate(360deg);
   }
 }
+
+
+

@@ -9,6 +9,10 @@ const { SubMenu } = Menu;
 class Sider extends React.Component {
     handleClick = e => {
         console.log('click ', e);
+
+        window.location.href = '#' + e.key;
+        //没有props.history，无法使用函数跳转
+        // this.props.history.push(e.key);
     };
 
     render() {
@@ -16,11 +20,11 @@ class Sider extends React.Component {
             <Menu
                 onClick={this.handleClick}
                 style={{ width: 256 }}
-                defaultSelectedKeys={['1']}
-                defaultOpenKeys={['sub1']}
+                defaultSelectedKeys={['/home']}
+                defaultOpenKeys={[]}
                 mode="inline"
             >
-                <SubMenu
+                {/* <SubMenu
                     key="sub1"
                     title={
                         <span>
@@ -37,36 +41,56 @@ class Sider extends React.Component {
                         <Menu.Item key="3">Option 3</Menu.Item>
                         <Menu.Item key="4">Option 4</Menu.Item>
                     </Menu.ItemGroup>
-                </SubMenu>
+                </SubMenu> */}
+                <Menu.Item key="/home">首页</Menu.Item>
+                <Menu.Item key="/role">角色管理</Menu.Item>
                 <SubMenu
-                    key="sub2"
+                    key="/user"
                     title={
                         <span>
                             <AppstoreOutlined />
-                            <span>Navigation Two</span>
+                            <span>用户管理</span>
                         </span>
                     }
                 >
-                    <Menu.Item key="5">Option 5</Menu.Item>
-                    <Menu.Item key="6">Option 6</Menu.Item>
-                    <SubMenu key="sub3" title="Submenu">
-                        <Menu.Item key="7">Option 7</Menu.Item>
-                        <Menu.Item key="8">Option 8</Menu.Item>
-                    </SubMenu>
+                    <Menu.Item key="/user/list">所有用户</Menu.Item>
+                    <Menu.Item key="/user/blacklist">用户小黑屋</Menu.Item>
                 </SubMenu>
                 <SubMenu
-                    key="sub4"
+                    key="/topic"
                     title={
                         <span>
                             <SettingOutlined />
-                            <span>Navigation Three</span>
+                            <span>话题管理</span>
                         </span>
                     }
                 >
-                    <Menu.Item key="9">Option 9</Menu.Item>
-                    <Menu.Item key="10">Option 10</Menu.Item>
-                    <Menu.Item key="11">Option 11</Menu.Item>
-                    <Menu.Item key="12">Option 12</Menu.Item>
+                    <Menu.Item key="/topic/list">所有话题</Menu.Item>
+                    <Menu.Item key="/topic/blacklist">话题小黑屋</Menu.Item>
+                </SubMenu>
+                <SubMenu
+                    key="/post"
+                    title={
+                        <span>
+                            <SettingOutlined />
+                            <span>帖子管理</span>
+                        </span>
+                    }
+                >
+                    <Menu.Item key="/post/list">所有帖子</Menu.Item>
+                    <Menu.Item key="/post/blacklist">帖子小黑屋</Menu.Item>
+                    <Menu.Item key="/post/comment/blacklist">评论小黑屋</Menu.Item>
+                </SubMenu>
+                <SubMenu
+                    key="/advertisement"
+                    title={
+                        <span>
+                            <SettingOutlined />
+                            <span>广告管理</span>
+                        </span>
+                    }
+                >
+                    <Menu.Item key="/advertisement/none">暂无</Menu.Item>
                 </SubMenu>
             </Menu>
         );
