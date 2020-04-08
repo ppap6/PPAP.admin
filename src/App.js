@@ -19,6 +19,7 @@ import UserBlacklist from './page/user/blacklist/blacklist';
 
 // import { Layout } from 'antd';
 
+import './common/css/reset.css';
 import './App.css';
 
 
