@@ -15,7 +15,6 @@
   position: relative;
   top: 56px;
   height: calc(100vh - 56px);
-  /* margin-top: 56px; */
   display: flex;
   justify-content: space-between;
   align-items: top;
@@ -30,10 +29,9 @@
   width: calc( 100vw - 256px);
   height: 100%;
   display: flex;
+  background-color: #EAEDF0;
+  position: relative;
 }
-
-
-
 
 
 
