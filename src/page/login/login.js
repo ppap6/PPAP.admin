@@ -12,11 +12,11 @@ class Login extends React.Component {
                     <div className={styles.header}>PPAP</div>
                     <div className={styles.main}>
                         <div className={styles.account}>
-                            <img src={require('../../common/img/account.png')} alt />
+                            <img src={require('../../common/img/account.png')} alt="" />
                             <input type="text" v-model="account" placeholder="请输入账号" />
                         </div>
                         <div className={styles.password}>
-                            <img src={require("../../common/img/password.png")} alt />
+                            <img src={require("../../common/img/password.png")} alt="" />
                             <input type="password" v-model="password" placeholder="请输入密码" />
                         </div>
                         <div className={styles.login}>

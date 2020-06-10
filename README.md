@@ -26,7 +26,7 @@ PPAP.server-py | https://github.com/ppap6/PPAP.server-py | python
 yarn
 ```
 ```bash
-yarn dev
+yarn start
 ```
 ```bash
 yarn build
