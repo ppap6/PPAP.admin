@@ -1,46 +1,51 @@
-import React from 'react';
-import Sider from './component/sider/sider';
-import Header from './component/header/header';
-import { HashRouter, Route, Switch, } from 'react-router-dom';
+import React from 'react'
+import { HashRouter, Route, Switch } from 'react-router-dom'
 
-import Home from './page/home/home';
-import Login from './page/login/login';
-import Role from './page/role/role';
+import Sider from './component/sider/sider'
+import Header from './component/header/header'
 
-import PostList from './page/post/list/list';
-import PostBlacklist from './page/post/blacklist/blacklist';
-import PostCommentBlacklist from './page/post/comment-blacklist/blacklist';
+import Home from './page/home/home'
+import Login from './page/login/login'
 
-import TopicList from './page/topic/list/list';
-import TopicBlacklist from './page/topic/blacklist/blacklist';
+import PostList from './page/post/list/list'
+import PostBlacklist from './page/post/blacklist/blacklist'
+import PostCommentBlacklist from './page/post/comment-blacklist/blacklist'
 
-import UserList from './page/user/list/list';
-import UserBlacklist from './page/user/blacklist/blacklist';
+import TopicList from './page/topic/list/list'
+import TopicBlacklist from './page/topic/blacklist/blacklist'
 
-// import { Layout } from 'antd';
+import UserList from './page/user/list/list'
+import UserBlacklist from './page/user/blacklist/blacklist'
 
-import './common/css/reset.css';
-import './App.css';
+import './App.css'
 
 
-const Inbox = ({ }) => (
+const Inbox = props => (
   <React.Fragment>
-    <Header className="header"></Header>
-    <div className="main">
-      <Sider className="sider"></Sider>
-      <div className="content">
-        <Route exact path="/" component={Home} />
-        <Route exact path="/role" component={Role} />
 
-        <Route exact path="/post/list" component={PostList} />
-        <Route exact path="/post/blacklist" component={PostBlacklist} />
-        <Route exact path="/post/comment-blacklist" component={PostCommentBlacklist} />
+    <div className="layout">
 
-        <Route exact path="/topic/list" component={TopicList} />
-        <Route exact path="/topic/blacklist" component={TopicBlacklist} />
+      <Sider className="sider" history ={props.history}></Sider>
 
-        <Route exact path="/user/list" component={UserList} />
-        <Route exact path="/user/blacklist" component={UserBlacklist} />
+      <div className="right">
+
+        <Header />
+
+        <div className="content">
+
+          <Route exact path="/" component={Home} />
+
+          <Route exact path="/post/list" component={PostList} />
+          <Route exact path="/post/blacklist" component={PostBlacklist} />
+          <Route exact path="/post/comment-blacklist" component={PostCommentBlacklist} />
+
+          <Route exact path="/topic/list" component={TopicList} />
+          <Route exact path="/topic/blacklist" component={TopicBlacklist} />
+
+          <Route exact path="/user/list" component={UserList} />
+          <Route exact path="/user/blacklist" component={UserBlacklist} />
+
+        </div>
 
       </div>
 
