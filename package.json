@@ -2,8 +2,14 @@
   "name": "ppap.admin",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "node scripts/start.js",
+    "build": "node scripts/build.js",
+    "test": "node scripts/test.js"
+  },
   "dependencies": {
     "antd": "^4.1.1",
+    "axios": "^0.19.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2"
@@ -55,9 +61,9 @@
     "postcss-safe-parser": "4.0.1",
     "postcss-scss": "^2.0.0",
     "precss": "^4.0.0",
-    "react-scripts": "3.4.1",
     "react-app-polyfill": "^1.0.6",
     "react-dev-utils": "^10.2.1",
+    "react-scripts": "3.4.1",
     "resolve": "1.15.0",
     "resolve-url-loader": "3.1.1",
     "sass-loader": "8.0.2",
@@ -72,11 +78,6 @@
     "webpack-dev-server": "3.10.3",
     "webpack-manifest-plugin": "2.2.0",
     "workbox-webpack-plugin": "4.3.1"
-  },
-  "scripts": {
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
   },
   "eslintConfig": {
     "extends": "react-app"
