@@ -1,23 +1,39 @@
-import React from 'react';
-// import './login.styl';
-import styles from './login.styl'; // 使用 CSS Modules 的方式引入
-
+import React from 'react'
+import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import styles from './login.styl'
 
 class Login extends React.Component {
+
+  state = {
+    email: '',
+    password: ''
+  }
+
+  handleEmailChange = e => {
+    this.setState({
+      email: e.target.value
+    })
+  }
+
+  handlePasswordChange = e => {
+    this.setState({
+      password: e.target.value
+    })
+  }
+
   render() {
     return (
       <div className={styles.container}>
         <div className={styles.mainContainer}>
-          <img className={styles.closeBtn} src={require("../../common/img/close.png")} />
           <div className={styles.header}>PPAP</div>
           <div className={styles.main}>
-            <div className={styles.account}>
-              <img src={require('../../common/img/account.png')} alt="" />
-              <input type="text" v-model="account" placeholder="请输入账号" />
+            <div className={styles.email}>
+              <UserOutlined />
+              <input type="text" value={this.state.email} onChange={this.handleEmailChange} placeholder="请输入邮箱" />
             </div>
             <div className={styles.password}>
-              <img src={require("../../common/img/password.png")} alt="" />
-              <input type="password" v-model="password" placeholder="请输入密码" />
+              <LockOutlined />
+              <input type="password" value={this.state.password}  onChange={this.handlePasswordChange} placeholder="请输入密码" />
             </div>
             <div className={styles.login}>
               <div >登录</div>
