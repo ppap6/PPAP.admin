@@ -21,6 +21,7 @@ import './App.css'
 
 
 const Inbox = props => (
+  
   <React.Fragment>
 
     <div className="layout">
@@ -29,7 +30,7 @@ const Inbox = props => (
 
       <div className="right">
 
-        <Header />
+        <Header history={props.history} />
 
         <div className="content">
 
@@ -52,6 +53,7 @@ const Inbox = props => (
     </div>
 
   </React.Fragment>
+  
 )
 
 

@@ -1,5 +1,55 @@
 .header {
   height 48px
   width 100%
+  padding 0 15px
   background-color #f8f8f8
+  display flex
+  align-items center
+  justify-content flex-end
+
+  .user {
+    display flex
+    align-items center
+
+    .role {
+      display flex
+      align-items center
+      margin 0 5px
+
+      span {
+        padding 0 2px
+      }
+    }
+
+    .name {
+      display flex
+      align-items center
+      margin 0 5px
+
+      span {
+        line-height 14px
+        padding 0 2px
+      }
+
+      &:hover {
+        cursor pointer
+        color #1890FF
+      }
+    }
+
+    .logout {
+      display flex
+      align-items center
+      margin 0 5px
+
+      span {
+        padding 0 2px
+      }
+
+      &:hover {
+        cursor pointer
+        color #1890FF
+      }
+    }
+  }
 }
