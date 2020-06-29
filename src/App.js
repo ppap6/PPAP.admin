@@ -25,7 +25,7 @@ const Inbox = props => (
 
     <div className="layout">
 
-      <Sider className="sider" history ={props.history}></Sider>
+      <Sider className="sider" history={props.history}></Sider>
 
       <div className="right">
 
@@ -63,10 +63,9 @@ const App = () => (
         <Route component={Inbox} />
       </Switch>
     </HashRouter>
-
   </div>
-);
-export default App;
+)
+export default App
 
 
 
