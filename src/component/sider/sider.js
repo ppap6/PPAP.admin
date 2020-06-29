@@ -2,6 +2,7 @@
 import React from 'react'
 import { ReadOutlined, UserOutlined, TagsOutlined, BookOutlined, ShoppingOutlined } from '@ant-design/icons'
 import { Menu } from 'antd'
+import Logo from 'common/img/logo.png'
 
 import styles from './sider.styl'
 
@@ -23,7 +24,7 @@ class Sider extends React.Component {
         defaultOpenKeys={[]}
         mode="inline"
       >
-        <img src={require('../../common/img/logo.png')} className={styles.logo}></img>
+        <img src={Logo} className={styles.logo} alt="logo"></img>
         <Menu.Item key="/">
           <span>
             <ReadOutlined />
