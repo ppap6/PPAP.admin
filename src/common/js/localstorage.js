@@ -17,7 +17,7 @@ export function getStorage(name) {
           return data
       }
   } else {
-      return undefined
+      return ''
   }
 }
 

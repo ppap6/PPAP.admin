@@ -1,5 +1,9 @@
 import React from 'react'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import sha1 from 'crypto-js/sha1'
+import md5 from 'crypto-js/md5'
+import { login } from 'api/user'
+
 import styles from './login.styl'
 
 class Login extends React.Component {
@@ -21,6 +25,16 @@ class Login extends React.Component {
     })
   }
 
+  login = () => {
+    const data = {
+      email: this.state.email.trim(),
+      password: md5(sha1(this.state.password).toString()).toString()
+    }
+    login(data).then(response => {
+      console.log(response.data)
+    })
+  }
+
   render() {
     return (
       <div className={styles.container}>
@@ -36,7 +50,7 @@ class Login extends React.Component {
               <input type="password" value={this.state.password}  onChange={this.handlePasswordChange} placeholder="请输入密码" />
             </div>
             <div className={styles.login}>
-              <div >登录</div>
+              <div onClick={this.login}>登录</div>
             </div>
           </div>
         </div>
