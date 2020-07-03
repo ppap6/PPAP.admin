@@ -1,10 +1,16 @@
 import React from 'react'
+import { message } from 'antd'
 import { UserOutlined, AndroidOutlined, LogoutOutlined } from '@ant-design/icons'
+import { removeStorage } from 'common/js/localstorage'
+
 import styles from './header.styl'
 
 class Header extends React.Component {
+  
   logout = () => {
+    removeStorage('user')
     this.props.history.push('/login')
+    message.info('已退出登录')
   }
 
   render() {
