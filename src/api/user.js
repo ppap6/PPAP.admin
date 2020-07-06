@@ -7,3 +7,14 @@ export function login(data) {
     password: data.password
   })
 }
+
+//获取用户列表
+export function getUserList(data){
+  return Request.get('/user', {
+    params: {
+      page_num: data.page_num,
+      page_size: data.page_size,
+      keyword: data.keyword
+    }
+  })
+}
