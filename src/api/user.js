@@ -18,3 +18,8 @@ export function getUserList(data){
     }
   })
 }
+
+//删除用户
+export function deleteUser(id){
+  return Request.delete(`/user/${id}`)
+}

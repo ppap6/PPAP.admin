@@ -1,10 +1,12 @@
 import React from 'react'
-import { Table, Avatar, Tag, Tooltip, Space, Input, message } from 'antd'
-import { getUserList } from 'api/user'
+import { Table, Avatar, Tag, Tooltip, Space, Input, message, Modal } from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { getUserList, deleteUser } from 'api/user'
 
 import styles from './list.styl'
 
 const { Search } = Input
+const { confirm } = Modal
 
 class List extends React.Component {
 
@@ -66,6 +68,46 @@ class List extends React.Component {
       keyword: value.trim()
     }, () => {
       this.getUserList()
+    })
+  }
+
+  deleteUser = (e) => {
+    const user = JSON.parse(e.target.getAttribute('user'))
+    const that = this
+    confirm({
+      title: '警告',
+      icon: <ExclamationCircleOutlined />,
+      content: `当前操作即将把用户『${user.name}』关进小黑屋`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk() {
+
+        that.setState({
+          loading: true
+        })
+
+        deleteUser(user.id).then(response => {
+          if(response.data.status == 200){
+            message.success(`用户『${user.name}』成功被关进小黑屋`)
+            that.getUserList()
+          }else{
+            message.warning(response.data.message)
+          }
+          that.setState({
+            loading: true
+          })
+        }).catch(error => {
+          console.log(error)
+          message.error('网络或服务器貌似有问题')
+          that.setState({
+            loading: false
+          })
+        })
+
+      },
+      onCancel() {
+        message.info(`用户『${user.name}』暂时逃脱关进小黑屋的命运`)
+      }
     })
   }
 
@@ -232,7 +274,7 @@ class List extends React.Component {
         render: (text, record) => (
           <Space size="middle">
             <a>查看</a>
-            <a>删除</a>
+            <a user={JSON.stringify(record)} onClick={this.deleteUser}>拉黑</a>
           </Space>
         ),
       }
@@ -241,7 +283,7 @@ class List extends React.Component {
     return (
       <div className={styles.container}>
         <div className={styles.header}>所有用户</div>
-        <Search className={styles.search} placeholder="昵称" onSearch={value => {this.search(value)}} enterButton />
+        <Search className={styles.search} placeholder="请输入昵称" onSearch={value => {this.search(value)}} enterButton />
         <Table 
           className={styles.table}
           columns={columns} 
