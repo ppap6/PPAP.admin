@@ -1,4 +1,5 @@
 import axios from 'axios'
+import App from '../App'
 import { getStorage, setStorage, removeStorage } from 'common/js/localstorage'
 
 const request = axios.create({
@@ -31,10 +32,10 @@ request.interceptors.response.use(
     if (response.data.status == 401) {
       //清除storage
       removeStorage('user')
-  
-      this.props.history.push({
-        pathname: '/login'
-      })
+      
+      window.location.href = '#/login'
+
+      return response
 
     } else {
       return response

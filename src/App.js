@@ -67,6 +67,7 @@ const App = () => (
     </HashRouter>
   </div>
 )
+
 export default App
 
 
