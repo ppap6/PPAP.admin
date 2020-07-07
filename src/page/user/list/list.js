@@ -72,30 +72,53 @@ class List extends React.Component {
   render() {
     const columns = [
       {
+        title: 'ID',
+        dataIndex: 'id',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: id => (
+          <Tooltip placement="topLeft" title={id}>
+            <span>{id}</span>
+          </Tooltip>
+        )
+      },
+      {
         title: '昵称',
         dataIndex: 'name',
         align: 'center',
-        ellipsis: false
+        ellipsis: {
+          showTitle: false
+        },
+        render: name => (
+          <Tooltip placement="topLeft" title={name}>
+            <span>{name}</span>
+          </Tooltip>
+        )
       },
       {
         title: '账号',
         dataIndex: 'account',
         align: 'center',
-        ellipsis: true,
-        render: text => {
-          if(text == ''){
+        ellipsis: {
+          showTitle: false
+        },
+        render: account => {
+          if(account == ''){
             return '未定义'
           }
-          return text
+          return (
+            <Tooltip placement="topLeft" title={account}>
+              <span>{account}</span>
+            </Tooltip>
+          )
         },
       },
       {
         title: '头像',
         dataIndex: 'avatar',
         align: 'center',
-        ellipsis: {
-          showTitle: false,
-        },
         render: avatar => (
           <Avatar src={avatar} />
         ),
@@ -104,14 +127,21 @@ class List extends React.Component {
         title: '邮箱',
         dataIndex: 'email',
         align: 'center',
-        ellipsis: true
+        ellipsis: {
+          showTitle: false
+        },
+        render: email => (
+          <Tooltip placement="topLeft" title={email}>
+            <span>{email}</span>
+          </Tooltip>
+        )
       },
       {
         title: '用户头衔',
         dataIndex: 'title',
         align: 'center',
         ellipsis: {
-          showTitle: false,
+          showTitle: false
         },
         render: title => {
           if(title == ''){
@@ -121,7 +151,7 @@ class List extends React.Component {
           }else{
             return (
               <Tooltip placement="topLeft" title={title}>
-                <span>{title}</span>
+                <Tag color="green">{title}</Tag>
               </Tooltip>
             )
           }
@@ -132,7 +162,7 @@ class List extends React.Component {
         dataIndex: 'signature',
         align: 'center',
         ellipsis: {
-          showTitle: false,
+          showTitle: false
         },
         render: signature => {
           if(signature == ''){
@@ -142,7 +172,7 @@ class List extends React.Component {
           }else{
             return (
               <Tooltip placement="topLeft" title={signature}>
-                <span>{signature}</span>
+                <Tag color="blue">{signature}</Tag>
               </Tooltip>
             )
           }
@@ -153,43 +183,46 @@ class List extends React.Component {
         dataIndex: 'create_time',
         align: 'center',
         ellipsis: {
-          showTitle: false,
+          showTitle: false
         },
         render: create_time => (
           <Tooltip placement="topLeft" title={create_time}>
             <span>{create_time}</span>
           </Tooltip>
-        ),
+        )
       },
       {
         title: '用户角色',
         dataIndex: 'role_name',
         align: 'center',
-        ellipsis: {
-          showTitle: false,
-        },
         render: (role_name, record) => {
-          if(record.role_id == 1){
-            return (
-              <Tag color="red">{role_name}</Tag>
-            )
-          }else if(record.role_id == 2){
-            return (
-              <Tag color="green">{role_name}</Tag>
-            )
-          }else if(record.role_id == 3){
-            return (
-              <Tag color="yellow">{role_name}</Tag>
-            )
-          }else if(record.role_id == 4){
-            return (
-              <Tag color="pink">{role_name}</Tag>
-            )
+          if(record.status == 1){
+            if(record.role_id == 1){
+              return (
+                <Tag color="red">{role_name}</Tag>
+              )
+            }else if(record.role_id == 2){
+              return (
+                <Tag color="green">{role_name}</Tag>
+              )
+            }else if(record.role_id == 3){
+              return (
+                <Tag color="yellow">{role_name}</Tag>
+              )
+            }else if(record.role_id == 4){
+              return (
+                <Tag color="pink">{role_name}</Tag>
+              )
+            }else{
+              return (
+                <Tag color="blue">{role_name}</Tag>
+              )
+            } 
           }else{
             return (
-              <Tag color="gray">{role_name}</Tag>
+              <Tag color="gray">小黑屋用户</Tag>
             )
-          } 
+          }  
         }
       },
       {
