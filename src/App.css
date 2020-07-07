@@ -18,7 +18,6 @@
   height: calc(100vh - 48px);
   display: flex;
   background-color: #EAEDF0;
-  position: relative;
 }
 
 /*滚动条整体部分,必须要设置*/

@@ -1,5 +1,5 @@
 import React from 'react'
-import { PageHeader, Table, Avatar, Tag, Tooltip, Space, Input, message } from 'antd'
+import { Table, Avatar, Tag, Tooltip, Space, Input, message } from 'antd'
 import { getUserList } from 'api/user'
 
 import styles from './list.styl'
@@ -206,7 +206,7 @@ class List extends React.Component {
     ]
 
     return (
-      <div>
+      <div className={styles.container}>
         <div className={styles.header}>所有用户</div>
         <Search className={styles.search} placeholder="昵称" onSearch={value => {this.search(value)}} enterButton />
         <Table 
