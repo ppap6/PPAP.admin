@@ -1,5 +1,4 @@
 import axios from 'axios'
-import App from '../App'
 import { getStorage, setStorage, removeStorage } from 'common/js/localstorage'
 
 const request = axios.create({
@@ -29,7 +28,7 @@ request.interceptors.response.use(
       storage.token = response.headers.new_token
       setStorage('user', storage)
     }
-    if (response.data.status == 401) {
+    if (response.data.status === 401) {
       //清除storage
       removeStorage('user')
       

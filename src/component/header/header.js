@@ -24,13 +24,13 @@ class Header extends React.Component {
     }
 
     const roleName = () => {
-      if(user.identity == 1){
+      if(user.identity === 1){
         return '超级管理员'
-      }else if(user.identity == 2){
+      }else if(user.identity === 2){
         return '管理员'
-      }else if(user.identity == 3){
+      }else if(user.identity === 3){
         return '运营'
-      }else if(user.identity == 4){
+      }else if(user.identity === 4){
         return '版主'
       }else{
         return '普通用户'

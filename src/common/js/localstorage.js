@@ -11,7 +11,7 @@ export function setStorage(name, data) {
 export function getStorage(name) {
   let data = window.localStorage.getItem(name)
   if (data) {
-      if (data.indexOf('{') == 0) {
+      if (data.indexOf('{') === 0) {
           return JSON.parse(data)
       } else {
           return data
