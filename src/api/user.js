@@ -14,7 +14,8 @@ export function getUserList(data){
     params: {
       page_num: data.page_num,
       page_size: data.page_size,
-      keyword: data.keyword
+      keyword: data.keyword,
+      status: data.status
     }
   })
 }
@@ -22,4 +23,17 @@ export function getUserList(data){
 //删除用户
 export function deleteUser(id){
   return Request.delete(`/user/${id}`)
+}
+
+//修改用户信息
+export function updateUser(id, data){
+  return Request.put(`/user/${id}`, {
+    name: data.name,
+    account: data.account,
+    title: data.title,
+    sex: data.sex,
+    email: data.email,
+    role_id: data.role_id,
+    status: data.status
+  })
 }
