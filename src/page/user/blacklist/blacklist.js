@@ -209,7 +209,7 @@ class BlackList extends React.Component {
           }else{
             return (
               <Tooltip placement="topLeft" title={title}>
-                <Tag color="green">{title}</Tag>
+                <span>{title}</span>
               </Tooltip>
             )
           }
@@ -230,7 +230,7 @@ class BlackList extends React.Component {
           }else{
             return (
               <Tooltip placement="topLeft" title={signature}>
-                <Tag color="blue">{signature}</Tag>
+                <span>{signature}</span>
               </Tooltip>
             )
           }
