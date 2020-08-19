@@ -12,19 +12,47 @@ function getBase64(file) {
 }
 
 class PicturesWall extends React.Component {
-  state = {
-    previewVisible: false,
-    previewImage: '',
-    previewTitle: '',
-    fileList: [
-      {
-        uid: '-1',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      }
-    ],
-  };
+
+  constructor(props){
+    super(props)
+
+    this.state = {
+      previewVisible: false,
+      previewImage: this.props.topic.icon,
+      previewTitle: '',
+      fileList: [
+        // {
+        //   uid: '-1',
+        //   name: 'image.png',
+        //   status: 'done',
+        //   url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        // }
+      ],
+    }
+    
+    if(props.topic.icon !== ''){
+      this.state.fileList = [
+        {
+          uid: props.topic.id,
+          url: props.topic.icon
+        }
+      ]
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    if(props.topic.icon !== ''){
+      this.setState({
+        previewImage: props.topic.icon,
+        fileList: [
+          {
+            uid: props.topic.id,
+            url: props.topic.icon
+          }
+        ]
+      })
+    }
+  }
 
   handleCancel = () => this.setState({ previewVisible: false });
 
@@ -49,8 +77,9 @@ class PicturesWall extends React.Component {
     formData.append("files[]", option.file);
     const reader = new FileReader();
     reader.readAsDataURL(option.file);
-    reader.onloadend = function(e) {
-      console.log(e.target.result);// 打印图片的base64
+    reader.onloadend = (e) => {
+      // console.log(e.target.result);// 打印图片的base64
+      this.props.emitBase64(e.target.result)
       if (e && e.target && e.target.result) {
         option.onSuccess();
       }

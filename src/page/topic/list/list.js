@@ -1,7 +1,7 @@
 import React from 'react'
 import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, Form, Button, message, Modal } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { getTopicList, deleteTopic } from 'api/topic'
+import { getTopicList, updateTopic, deleteTopic } from 'api/topic'
 import PicturesWall from 'component/upload/picturesWall'
 
 import styles from './list.styl'
@@ -11,18 +11,17 @@ const { confirm } = Modal
 const layout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
-};
+}
 
 const validateMessages = {
   required: '${label} is required!',
   types: {
-    email: '${label} is not validate email!',
     num: '${label} is not a validate number!',
   },
   number: {
     range: '${label} must be between ${min} and ${max}',
   },
-};
+}
 
 class List extends React.Component {
 
@@ -185,10 +184,52 @@ class List extends React.Component {
   }
 
   //表单验证成功后触发
-  onFinish = values => {
-    console.log(values);
+  onFinish = () => {
+    // console.log(this.formRef.current.getFieldsValue({
+    //   name: '',
+    //   intro: '',
+    //   num: 0,
+    //   status: 0
+    // }))
+    const valueObj = this.formRef.current.getFieldsValue({
+      name: '',
+      intro: '',
+      num: 0,
+      status: 0
+    })
+    let modalTopic = this.state.modalTopic
+    modalTopic.name = valueObj.name
+    modalTopic.intro = valueObj.intro
+    modalTopic.num = valueObj.num
+    modalTopic.status = valueObj.status
     this.setState({
-      modalVisible: false
+      modalVisible: false,
+      modalTopic
+    }, () => {
+      this.updateTopic()
+    })
+  }
+
+  //子组件传递选中图片base64
+  emitBase64 = (base64) => {
+    // console.log(base64)
+    let modalTopic = this.state.modalTopic
+    modalTopic.icon = base64
+    this.setState({
+      modalTopic
+    })
+  }
+
+  updateTopic = () => {
+    const topicId = this.state.modalTopic.id
+    const topicData = this.state.modalTopic
+    updateTopic(topicId, topicData).then(response => {
+      if(response.data.status === 200){
+        message.success('修改话题成功')
+        this.getTopicList()
+      }else{
+        message.warning(response.data.message)
+      }
     })
   }
 
@@ -402,7 +443,7 @@ class List extends React.Component {
             <Form.Item label="name" name={'name'} label="名称" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item label="num" name={'num'} label="序号" rules={[{ type: 'number', min: 0, max: 99 }]}>
+            <Form.Item label="num" name={'num'} label="序号" rules={[{ type: 'number', min: 0, max: 99, required: true }]}>
               <InputNumber />
             </Form.Item>
             {
@@ -420,10 +461,13 @@ class List extends React.Component {
               <></>
             }
             <Form.Item label="icon" name={'icon'} label="图标">
-              <PicturesWall />
+              <PicturesWall emitBase64={this.emitBase64} topic={this.state.modalTopic} />
             </Form.Item>
             <Form.Item label="intro" name={'intro'} label="简介">
               <Input.TextArea />
+            </Form.Item>
+            <Form.Item label="status" name={'status'} label="显示状态" rules={[{ type: 'number', min: 0, max: 1, required: true }]}>
+              <InputNumber />
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
               <Button type="primary" htmlType="submit">保存</Button>

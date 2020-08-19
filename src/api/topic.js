@@ -21,6 +21,7 @@ export function updateTopic(id, data){
     name: data.name,
     intro: data.intro,
     icon: data.icon,
-    num: data.num
+    num: data.num,
+    status: data.status
   })
 }
