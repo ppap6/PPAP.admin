@@ -1,13 +1,32 @@
 import React from 'react'
-import { Table, Avatar, Tag, Tooltip, Space, Input, message, Modal } from 'antd'
+import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, Form, Button, message, Modal } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { getTopicList, deleteTopic } from 'api/topic'
+import PicturesWall from 'component/upload/picturesWall'
 
 import styles from './list.styl'
 
 const { confirm } = Modal
 
+const layout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
+};
+
+const validateMessages = {
+  required: '${label} is required!',
+  types: {
+    email: '${label} is not validate email!',
+    num: '${label} is not a validate number!',
+  },
+  number: {
+    range: '${label} must be between ${min} and ${max}',
+  },
+};
+
 class List extends React.Component {
+
+  formRef = React.createRef();
 
   state = {
     loading: false,
@@ -18,7 +37,19 @@ class List extends React.Component {
     currentTopicId: 0,
     currentTopicName: '',
     displaySubTopic: false,
-    subTopicList: []
+    subTopicList: [],
+    modalVisible: false,
+    modalTopic: {
+      id: 0,
+      name: '',
+      sid: 0,
+      intro: '',
+      icon: '',
+      num: 0,
+      posts: 0,
+      followers: 0,
+      status: 0
+    }
   }
 
   componentDidMount(){
@@ -84,10 +115,14 @@ class List extends React.Component {
   displaySubTopic = (e) => {
     const topic = JSON.parse(e.target.getAttribute('topic'))
     this.setState({
-      subTopicList: topic.child,
-      displaySubTopic: true,
-      currentTopicId: topic.id,
-      currentTopicName: topic.name
+      displaySubTopic: false
+    }, () => {
+      this.setState({
+        subTopicList: topic.child,
+        displaySubTopic: true,
+        currentTopicId: topic.id,
+        currentTopicName: topic.name
+      })
     })
   }
 
@@ -128,6 +163,32 @@ class List extends React.Component {
       onCancel() {
         message.info(`话题『${topic.name}』暂时逃脱关进小黑屋的命运`)
       }
+    })
+  }
+
+  showModal = (e) => {
+    const topic = JSON.parse(e.target.getAttribute('topic'))
+    this.setState({
+      modalTopic: topic,
+      modalVisible: true
+    }, () => {
+      if(this.formRef.current !== null){
+        this.formRef.current.setFieldsValue(topic)
+      }
+    })
+  }
+
+  handleModalCancel = () => {
+    this.setState({
+      modalVisible: false
+    })
+  }
+
+  //表单验证成功后触发
+  onFinish = values => {
+    console.log(values);
+    this.setState({
+      modalVisible: false
     })
   }
 
@@ -209,7 +270,9 @@ class List extends React.Component {
         align: 'center',
         width: 80,
         render: (posts, record) => (
-          <span>{record.sid ? posts : '*'}</span>
+          <>
+            {record.sid ? <Tag color="blue">{posts}</Tag> : '*'}
+          </>
         )
       },
       {
@@ -218,7 +281,9 @@ class List extends React.Component {
         align: 'center',
         width: 80,
         render: (followers, record) => (
-          <span>{record.sid ? followers : '*'}</span>
+          <>
+            {record.sid ? <Tag color="geekblue">{followers}</Tag> : '*'}
+          </>
         )
       },
       {
@@ -271,7 +336,7 @@ class List extends React.Component {
         width: 180,
         render: (text, record) => (
           <Space size="middle">
-            <a>查看</a>
+            <a topic={JSON.stringify(record)} onClick={this.showModal}>查看</a>
             {record.sid ? '' : <a topic={JSON.stringify(record)} onClick={this.displaySubTopic}>下级</a>}
             <a topic={JSON.stringify(record)} onClick={this.deleteTopic}>拉黑</a>
           </Space>
@@ -280,44 +345,92 @@ class List extends React.Component {
     ]
 
     return (
-      <div className={styles.container}>
-        <div className={styles.header}>一级话题</div>
-        <div className={styles.empty}></div>
-        <Table 
-          className={styles.table}
-          columns={columns} 
-          dataSource={this.state.topicList} 
-          rowKey="id"
-          pagination={{
-            current: this.state.pageNum,
-            pageSize: this.state.pageSize,
-            total: this.state.total,
-            position: ['bottomCenter']
-          }}
-          loading={this.state.loading}
-          onChange={this.handleTableChange}
-        />
+      <>
+        <div className={styles.container}>
+          <div className={styles.header}>一级话题</div>
+          <div className={styles.empty}></div>
+          <Table 
+            className={styles.table}
+            columns={columns} 
+            dataSource={this.state.topicList} 
+            rowKey="id"
+            pagination={{
+              current: this.state.pageNum,
+              pageSize: this.state.pageSize,
+              total: this.state.total,
+              position: ['bottomCenter']
+            }}
+            loading={this.state.loading}
+            onChange={this.handleTableChange}
+          />
 
-        {
-          this.state.displaySubTopic
-          ?
-          (
-            <div className={styles.subcontainer}>
-              <div className={styles.header}>【{this.state.currentTopicName}】的二级话题</div>
-              <div className={styles.empty}></div>
-              <Table 
-                className={styles.table}
-                columns={columns} 
-                dataSource={this.state.subTopicList} 
-                rowKey="id"
-              />
-            </div>
-          )
-          :
-          <div/>
-        }
-        
-      </div>
+          {
+            this.state.displaySubTopic
+            ?
+            (
+              <div className={styles.subcontainer}>
+                <div className={styles.header}>【{this.state.currentTopicName}】的二级话题</div>
+                <div className={styles.empty}></div>
+                <Table 
+                  className={styles.table}
+                  columns={columns} 
+                  dataSource={this.state.subTopicList} 
+                  rowKey="id"
+                />
+              </div>
+            )
+            :
+            <div/>
+          }
+          
+        </div>
+
+        <Modal
+          title="话题详情"
+          visible={this.state.modalVisible}
+          footer= ''
+          onCancel={this.handleModalCancel}
+        >
+          <Form 
+            {...layout} 
+            name="nest-messages" 
+            onFinish={this.onFinish} 
+            validateMessages={validateMessages}
+            initialValues={this.state.modalTopic}
+            ref={this.formRef}
+          >
+            <Form.Item label="name" name={'name'} label="名称" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item label="num" name={'num'} label="序号" rules={[{ type: 'number', min: 0, max: 99 }]}>
+              <InputNumber />
+            </Form.Item>
+            {
+              this.state.modalTopic.sid
+              ?
+              <>
+              <Form.Item label="posts" name={'posts'} label="帖子数">
+                <Tag color="blue">{this.state.modalTopic.posts}</Tag>
+              </Form.Item>
+              <Form.Item label="followers" name={'followers'} label="关注数">
+                <Tag color="geekblue">{this.state.modalTopic.followers}</Tag>
+              </Form.Item>
+              </>
+              :
+              <></>
+            }
+            <Form.Item label="icon" name={'icon'} label="图标">
+              <PicturesWall />
+            </Form.Item>
+            <Form.Item label="intro" name={'intro'} label="简介">
+              <Input.TextArea />
+            </Form.Item>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
+              <Button type="primary" htmlType="submit">保存</Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </>
     )
   }
 }
