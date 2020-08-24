@@ -12,7 +12,6 @@ import PostBlacklist from './page/post/blacklist/blacklist'
 import PostCommentBlacklist from './page/post/comment-blacklist/blacklist'
 
 import TopicList from './page/topic/list/list'
-import TopicBlacklist from './page/topic/blacklist/blacklist'
 
 import UserList from './page/user/list/list'
 import UserBlacklist from './page/user/blacklist/blacklist'
@@ -41,7 +40,6 @@ const Inbox = props => (
           <Route exact path="/post/comment-blacklist" component={PostCommentBlacklist} />
 
           <Route exact path="/topic/list" component={TopicList} />
-          <Route exact path="/topic/blacklist" component={TopicBlacklist} />
 
           <Route exact path="/user/list" component={UserList} />
           <Route exact path="/user/blacklist" component={UserBlacklist} />
