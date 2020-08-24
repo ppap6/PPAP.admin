@@ -1,14 +1,32 @@
 import React from 'react'
-import { Table, Avatar, Tag, Tooltip, Space, Input, message, Modal } from 'antd'
+import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, message,Form, Modal, Button } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { getUserList, deleteUser } from 'api/user'
+import { getUserList, updateUser, deleteUser } from 'api/user'
+import PicturesWall from 'component/upload/userPicturesWall'
 
 import styles from './list.styl'
 
 const { Search } = Input
 const { confirm } = Modal
 
+const layout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
+}
+
+const validateMessages = {
+  required: '${label} is required!',
+  types: {
+    num: '${label} is not a validate number!',
+  },
+  number: {
+    range: '${label} must be between ${min} and ${max}',
+  },
+}
+
 class List extends React.Component {
+
+  formRef = React.createRef()
 
   state = {
     loading: false,
@@ -16,7 +34,23 @@ class List extends React.Component {
     pageSize: 10,
     total: 0,
     keyword: '',
-    userList: []
+    userList: [],
+    modalVisible: false,
+    modalUser: {
+      id: 0,
+      name: '',
+      account: '',
+      avatar: '',
+      bg: '',
+      title: '',
+      signature: '',
+      sex: 0,
+      email: '',
+      mobile: '',
+      role_id: 0,
+      role_name: '',
+      status: 0
+    }
   }
 
   componentDidMount(){
@@ -41,9 +75,18 @@ class List extends React.Component {
       keyword: this.state.keyword
     }
     getUserList(data).then(response => {
-      if(response.data.status == 200){
+      if(response.data.status === 200){
+        let list = response.data.message.list
+        for(let i=0; i<list.length; i++){
+          if(list[i].avatar === null){
+            list[i].avatar = ''
+          }
+          if(list[i].bg === null){
+            list[i].bg = ''
+          }
+        }
         this.setState({
-          userList: response.data.message.list,
+          userList: list,
           pageNum: response.data.message.page_num,
           pageSize: response.data.message.page_size,
           total: response.data.message.total
@@ -87,7 +130,7 @@ class List extends React.Component {
         })
 
         deleteUser(user.id).then(response => {
-          if(response.data.status == 200){
+          if(response.data.status === 200){
             message.success(`用户『${user.name}』成功被关进小黑屋`)
             that.getUserList()
           }else{
@@ -107,6 +150,78 @@ class List extends React.Component {
       },
       onCancel() {
         message.info(`用户『${user.name}』暂时逃脱关进小黑屋的命运`)
+      }
+    })
+  }
+
+  showModal = (e) => {
+    const user = JSON.parse(e.target.getAttribute('user'))
+    this.setState({
+      modalUser: user,
+      modalVisible: true
+    }, () => {
+      if(this.formRef.current !== null){
+        this.formRef.current.setFieldsValue(user)
+      }
+    })
+  }
+
+  handleModalCancel = () => {
+    this.setState({
+      modalVisible: false
+    })
+  }
+
+  //表单验证成功后触发
+  onFinish = () => {
+    // console.log(this.formRef.current.getFieldsValue({
+    //   name: '',
+    //   intro: '',
+    //   num: 0,
+    //   status: 0
+    // }))
+    const valueObj = this.formRef.current.getFieldsValue({
+      name: '',
+      intro: '',
+      num: 0,
+      status: 0
+    })
+    let modalUser = this.state.modalUser
+    modalUser.name = valueObj.name
+    modalUser.intro = valueObj.intro
+    modalUser.num = valueObj.num
+    modalUser.status = valueObj.status
+    this.setState({
+      modalVisible: false,
+      modalUser
+    }, () => {
+      this.updateUser()
+    })
+  }
+
+  //子组件传递选中图片base64
+  emitBase64 = (base64, type) => {
+    // console.log(base64)
+    let modalUser = this.state.modalUser
+    if(type === 'avatar'){
+      modalUser.avatar = base64
+    }else{
+      modalUser.bg = base64
+    }
+    this.setState({
+      modalUser
+    })
+  }
+
+  updateUser = () => {
+    const userId = this.state.modalUser.id
+    const userData = this.state.modalUser
+    updateUser(userId, userData).then(response => {
+      if(response.data.status === 200){
+        message.success('修改用户成功')
+        this.getUserList()
+      }else{
+        message.warning(response.data.message)
       }
     })
   }
@@ -147,7 +262,7 @@ class List extends React.Component {
           showTitle: false
         },
         render: account => {
-          if(account == ''){
+          if(account === ''){
             return '未定义'
           }
           return (
@@ -186,7 +301,7 @@ class List extends React.Component {
           showTitle: false
         },
         render: title => {
-          if(title == ''){
+          if(title === ''){
             return (
               <Tag color="green">无</Tag>
             )
@@ -207,7 +322,7 @@ class List extends React.Component {
           showTitle: false
         },
         render: signature => {
-          if(signature == ''){
+          if(signature === ''){
             return (
               <Tag color="blue">无</Tag>
             )
@@ -238,20 +353,20 @@ class List extends React.Component {
         dataIndex: 'role_name',
         align: 'center',
         render: (role_name, record) => {
-          if(record.status == 1){
-            if(record.role_id == 1){
+          if(record.status === 1){
+            if(record.role_id === 1){
               return (
                 <Tag color="red">{role_name}</Tag>
               )
-            }else if(record.role_id == 2){
+            }else if(record.role_id === 2){
               return (
                 <Tag color="green">{role_name}</Tag>
               )
-            }else if(record.role_id == 3){
+            }else if(record.role_id === 3){
               return (
                 <Tag color="yellow">{role_name}</Tag>
               )
-            }else if(record.role_id == 4){
+            }else if(record.role_id === 4){
               return (
                 <Tag color="pink">{role_name}</Tag>
               )
@@ -273,7 +388,7 @@ class List extends React.Component {
         align: 'center',
         render: (text, record) => (
           <Space size="middle">
-            <a>查看</a>
+            <a user={JSON.stringify(record)} onClick={this.showModal}>查看</a>
             <a user={JSON.stringify(record)} onClick={this.deleteUser}>拉黑</a>
           </Space>
         ),
@@ -281,24 +396,79 @@ class List extends React.Component {
     ]
 
     return (
-      <div className={styles.container}>
-        <div className={styles.header}>所有用户</div>
-        <Search className={styles.search} placeholder="请输入昵称" onSearch={value => {this.search(value)}} enterButton />
-        <Table 
-          className={styles.table}
-          columns={columns} 
-          dataSource={this.state.userList} 
-          rowKey="id"
-          pagination={{
-            current: this.state.pageNum,
-            pageSize: this.state.pageSize,
-            total: this.state.total,
-            position: ['bottomCenter']
-          }}
-          loading={this.state.loading}
-          onChange={this.handleTableChange}
-        />
-      </div>
+      <>
+        <div className={styles.container}>
+          <div className={styles.header}>所有用户</div>
+          <Search className={styles.search} placeholder="请输入昵称" onSearch={value => {this.search(value)}} enterButton />
+          <Table 
+            className={styles.table}
+            columns={columns} 
+            dataSource={this.state.userList} 
+            rowKey="id"
+            pagination={{
+              current: this.state.pageNum,
+              pageSize: this.state.pageSize,
+              total: this.state.total,
+              position: ['bottomCenter']
+            }}
+            loading={this.state.loading}
+            onChange={this.handleTableChange}
+          />
+        </div>
+
+        <Modal
+          title="用户详情"
+          visible={this.state.modalVisible}
+          footer= ''
+          onCancel={this.handleModalCancel}
+        >
+          <Form 
+            {...layout} 
+            name="nest-messages" 
+            onFinish={this.onFinish} 
+            validateMessages={validateMessages}
+            initialValues={this.state.modalUser}
+            ref={this.formRef}
+          >
+            <Form.Item name={'name'} label="名称" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item name={'email'} label="邮箱" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item name={'account'} label="账号">
+              <Input />
+            </Form.Item>
+            <Form.Item name={'sex'} label="性别" rules={[{ type: 'number', min: 0, max: 2, required: true }]}>
+              <InputNumber />
+            </Form.Item>
+            <Form.Item name={'avatar'} label="头像">
+              <PicturesWall emitBase64={this.emitBase64} type="avatar" user={this.state.modalUser} />
+            </Form.Item>
+            <Form.Item name={'bg'} label="背景">
+              <PicturesWall emitBase64={this.emitBase64} type="bg" user={this.state.modalUser} />
+            </Form.Item>
+            <Form.Item name={'title'} label="个人头衔">
+              <Input.TextArea />
+            </Form.Item>
+            <Form.Item name={'signature'} label="个人签名">
+              <Input.TextArea />
+            </Form.Item>
+            <Form.Item name={'mobile'} label="手机号">
+              <Input />
+            </Form.Item>
+            <Form.Item name={'role_id'} label="角色类型" rules={[{ type: 'number', min: 1, max: 5, required: true }]}>
+              <InputNumber />
+            </Form.Item>
+            <Form.Item name={'status'} label="显示状态" rules={[{ type: 'number', min: 0, max: 1, required: true }]}>
+              <InputNumber />
+            </Form.Item>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
+              <Button type="primary" htmlType="submit">保存</Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </>
     )
   }
 }
