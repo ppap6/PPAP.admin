@@ -2,7 +2,7 @@ import React from 'react'
 import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, Form, Button, message, Modal } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { getTopicList, updateTopic, deleteTopic } from 'api/topic'
-import PicturesWall from 'component/upload/picturesWall'
+import PicturesWall from 'component/upload/topicPicturesWall'
 
 import styles from './list.styl'
 
@@ -25,7 +25,7 @@ const validateMessages = {
 
 class List extends React.Component {
 
-  formRef = React.createRef();
+  formRef = React.createRef()
 
   state = {
     loading: false,
@@ -440,33 +440,33 @@ class List extends React.Component {
             initialValues={this.state.modalTopic}
             ref={this.formRef}
           >
-            <Form.Item label="name" name={'name'} label="名称" rules={[{ required: true }]}>
+            <Form.Item name={'name'} label="名称" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item label="num" name={'num'} label="序号" rules={[{ type: 'number', min: 0, max: 99, required: true }]}>
+            <Form.Item name={'num'} label="序号" rules={[{ type: 'number', min: 0, max: 99, required: true }]}>
               <InputNumber />
             </Form.Item>
             {
               this.state.modalTopic.sid
               ?
               <>
-              <Form.Item label="posts" name={'posts'} label="帖子数">
+              <Form.Item name={'posts'} label="帖子数">
                 <Tag color="blue">{this.state.modalTopic.posts}</Tag>
               </Form.Item>
-              <Form.Item label="followers" name={'followers'} label="关注数">
+              <Form.Item name={'followers'} label="关注数">
                 <Tag color="geekblue">{this.state.modalTopic.followers}</Tag>
               </Form.Item>
               </>
               :
               <></>
             }
-            <Form.Item label="icon" name={'icon'} label="图标">
+            <Form.Item name={'icon'} label="图标">
               <PicturesWall emitBase64={this.emitBase64} topic={this.state.modalTopic} />
             </Form.Item>
-            <Form.Item label="intro" name={'intro'} label="简介">
+            <Form.Item name={'intro'} label="简介">
               <Input.TextArea />
             </Form.Item>
-            <Form.Item label="status" name={'status'} label="显示状态" rules={[{ type: 'number', min: 0, max: 1, required: true }]}>
+            <Form.Item name={'status'} label="显示状态" rules={[{ type: 'number', min: 0, max: 1, required: true }]}>
               <InputNumber />
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
