@@ -29,10 +29,14 @@ export function deleteUser(id){
 export function updateUser(id, data){
   return Request.put(`/user/${id}`, {
     name: data.name,
-    account: data.account,
-    title: data.title,
-    sex: data.sex,
     email: data.email,
+    account: data.account,
+    sex: data.sex,
+    avatar: data.avatar,
+    bg: data.bg,
+    title: data.title,
+    signature: data.signature,
+    mobile: data.mobile,
     role_id: data.role_id,
     status: data.status
   })

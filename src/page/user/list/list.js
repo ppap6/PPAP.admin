@@ -182,14 +182,24 @@ class List extends React.Component {
     // }))
     const valueObj = this.formRef.current.getFieldsValue({
       name: '',
-      intro: '',
-      num: 0,
+      email: '',
+      account: '',
+      sex: 0,
+      title: '',
+      signature: '',
+      mobile: '',
+      role_id: 0,
       status: 0
     })
     let modalUser = this.state.modalUser
     modalUser.name = valueObj.name
-    modalUser.intro = valueObj.intro
-    modalUser.num = valueObj.num
+    modalUser.email = valueObj.email
+    modalUser.account = valueObj.account
+    modalUser.sex = valueObj.sex
+    modalUser.title = valueObj.title
+    modalUser.signature = valueObj.signature
+    modalUser.mobile = valueObj.mobile
+    modalUser.role_id = valueObj.role_id
     modalUser.status = valueObj.status
     this.setState({
       modalVisible: false,
