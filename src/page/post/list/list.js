@@ -1,12 +1,331 @@
 import React from 'react'
+import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, message,Form, Modal, Button } from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { getPostList } from 'api/post'
+import PicturesWall from 'component/upload/userPicturesWall'
+
 import styles from './list.styl'
 
+const { Search } = Input
+const { confirm } = Modal
+
+const layout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
+}
+
+const validateMessages = {
+  required: '${label} is required!',
+  types: {
+    num: '${label} is not a validate number!',
+  },
+  number: {
+    range: '${label} must be between ${min} and ${max}',
+  },
+}
+
 class List extends React.Component {
+
+  formRef = React.createRef()
+
+  state = {
+    loading: false,
+    pageNum: 1,
+    pageSize: 10,
+    total: 0,
+    keyword: '',
+    postList: [],
+    modalVisible: false,
+    modalPost: {
+      id: 0,
+      uid: 0,
+      uname: '',
+      avatar: '',
+      title: '',
+      content: '',
+      md: '',
+      create_time: '',
+      update_time: '',
+      pv: 0,
+      likes: 0,
+      collects: 0,
+      answers: 0,
+      topic_id: 0,
+      topic_name: '',
+      status: 0
+    }
+  }
+
+  componentDidMount(){
+    this.getPostList()
+  }
+
+  handleTableChange = (pagination) => {
+    this.setState({
+      pageNum: pagination.current
+    }, () => {
+      this.getPostList()
+    })
+  }
+
+  getPostList = () => {
+    this.setState({
+      loading: true
+    })
+    const data = {
+      page_num: this.state.pageNum,
+      page_size: this.state.pageSize,
+      keyword: this.state.keyword
+    }
+    getPostList(data).then(response => {
+      if(response.data.status === 200){
+        let list = response.data.message.list
+        for(let i=0; i<list.length; i++){
+          if(list[i].avatar === null){
+            list[i].avatar = ''
+          }
+          if(list[i].bg === null){
+            list[i].bg = ''
+          }
+        }
+        this.setState({
+          postList: list,
+          pageNum: response.data.message.page_num,
+          pageSize: response.data.message.page_size,
+          total: response.data.message.total
+        })
+      }else{
+        message.warning(response.data.message)
+      }
+      this.setState({
+        loading: false
+      })
+    }).catch(error => {
+      console.log(error)
+      message.error('网络或服务器貌似有问题')
+      this.setState({
+        loading: false
+      })
+    })
+  }
+
+  search = value => {
+    this.setState({
+      keyword: value.trim()
+    }, () => {
+      this.getPostList()
+    })
+  }
+
+  showModal = (e) => {
+    const post = JSON.parse(e.target.getAttribute('post'))
+    this.setState({
+      modalPost: post,
+      modalVisible: true
+    })
+  }
+
+  handleModalCancel = () => {
+    this.setState({
+      modalVisible: false
+    })
+  }
+
   render() {
+    const columns = [
+      {
+        title: 'ID',
+        dataIndex: 'id',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: id => (
+          <Tooltip placement="topLeft" title={id}>
+            <span>{id}</span>
+          </Tooltip>
+        )
+      },
+      {
+        title: '标题',
+        dataIndex: 'title',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: title => (
+          <Tooltip placement="topLeft" title={title}>
+            <span>{title}</span>
+          </Tooltip>
+        )
+      },
+      {
+        title: '作者',
+        dataIndex: 'uname',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: uname => {
+          return (
+            <Tooltip placement="topLeft" title={uname}>
+              <span>{uname}</span>
+            </Tooltip>
+          )
+        },
+      },
+      {
+        title: '头像',
+        dataIndex: 'avatar',
+        align: 'center',
+        render: avatar => (
+          <Avatar src={avatar} />
+        ),
+      },
+      {
+        title: '话题',
+        dataIndex: 'topic_name',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: topic_name => (
+          <Tooltip placement="topLeft" title={topic_name}>
+            <span>{topic_name}</span>
+          </Tooltip>
+        )
+      },
+      {
+        title: '浏览量',
+        dataIndex: 'pv',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: pv => {
+          return (
+            <Tooltip placement="topLeft" title={pv}>
+              <span>{pv}</span>
+            </Tooltip>
+          )
+        },
+      },
+      {
+        title: '点赞量',
+        dataIndex: 'likes',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: likes => {
+          return (
+            <Tooltip placement="topLeft" title={likes}>
+              <span>{likes}</span>
+            </Tooltip>
+          )
+        }
+      },
+      {
+        title: '收藏量',
+        dataIndex: 'collects',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: collects => {
+          return (
+            <Tooltip placement="topLeft" title={collects}>
+              <span>{collects}</span>
+            </Tooltip>
+          )
+        }
+      },
+      {
+        title: '评论 / 回复',
+        dataIndex: 'answers',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: answers => {
+          return (
+            <Tooltip placement="topLeft" title={answers}>
+              <span>{answers}</span>
+            </Tooltip>
+          )
+        }
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'create_time',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: create_time => (
+          <Tooltip placement="topLeft" title={create_time}>
+            <span>{create_time}</span>
+          </Tooltip>
+        )
+      },
+      {
+        title: '更新时间',
+        dataIndex: 'update_time',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: update_time => (
+          <Tooltip placement="topLeft" title={update_time}>
+            <span>{update_time}</span>
+          </Tooltip>
+        )
+      },
+      {
+        title: '操作',
+        dataIndex: 'action',
+        align: 'center',
+        render: (text, record) => (
+          <Space size="middle">
+            <a post={JSON.stringify(record)} onClick={this.showModal}>查看</a>
+            <a post={JSON.stringify(record)}>拉黑</a>
+          </Space>
+        ),
+      }
+    ]
+
     return (
-      <div>详情</div>
+      <>
+        <div className={styles.container}>
+          <div className={styles.header}>所有帖子</div>
+          <Search className={styles.search} placeholder="请输入关键字" onSearch={value => {this.search(value)}} enterButton />
+          <Table 
+            className={styles.table}
+            columns={columns} 
+            dataSource={this.state.postList} 
+            rowKey="id"
+            pagination={{
+              current: this.state.pageNum,
+              pageSize: this.state.pageSize,
+              total: this.state.total,
+              position: ['bottomCenter']
+            }}
+            loading={this.state.loading}
+            onChange={this.handleTableChange}
+          />
+        </div>
+
+        <Modal
+          title="帖子详情"
+          visible={this.state.modalVisible}
+          footer= ''
+          onCancel={this.handleModalCancel}
+        >
+          {this.state.modalPost.content}
+        </Modal>
+      </>
     )
   }
 }
 
-export default List
+export default List;
