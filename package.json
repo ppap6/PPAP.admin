@@ -8,6 +8,7 @@
     "test": "node scripts/test.js"
   },
   "dependencies": {
+    "@uiw/react-md-editor": "^1.14.4",
     "antd": "^4.1.1",
     "axios": "^0.19.2",
     "crypto-js": "^4.0.0",
