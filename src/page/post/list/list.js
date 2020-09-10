@@ -5,6 +5,7 @@ import { getPostList } from 'api/post'
 import PicturesWall from 'component/upload/userPicturesWall'
 
 import styles from './list.styl'
+import { getPost } from '../../../api/post'
 
 const { Search } = Input
 const { confirm } = Modal
@@ -117,8 +118,17 @@ class List extends React.Component {
     })
   }
 
-  showModal = (e) => {
-    const post = JSON.parse(e.target.getAttribute('post'))
+  showModal = async (e) => {
+    let post = JSON.parse(e.target.getAttribute('post'))
+    await getPost(post.id).then(response => {
+      if(response.data.status === 200){
+        post.content = response.data.message.content
+      }else{
+        post.content = '获取帖子内容失败'
+      }
+    }).catch(error => {
+      post.content = '获取帖子内容失败'
+    })
     this.setState({
       modalPost: post,
       modalVisible: true
@@ -317,11 +327,13 @@ class List extends React.Component {
 
         <Modal
           title="帖子详情"
+          width="80vw"
           visible={this.state.modalVisible}
           footer= ''
           onCancel={this.handleModalCancel}
-        >
-          {this.state.modalPost.content}
+        > 
+          <h1 align="center">{this.state.modalPost.title}</h1>
+          <div className="markdown-body" dangerouslySetInnerHTML={{__html: this.state.modalPost.content}}></div>
         </Modal>
       </>
     )

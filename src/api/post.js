@@ -12,3 +12,8 @@ export function getPostList(data){
     }
   })
 }
+
+//获取帖子信息
+export function getPost(id){
+  return Request.get(`/post/${id}`)
+}
