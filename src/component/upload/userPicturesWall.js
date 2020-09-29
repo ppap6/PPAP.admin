@@ -139,6 +139,7 @@ class PicturesWall extends React.Component {
           title={previewTitle}
           footer={null}
           onCancel={this.handleCancel}
+          maskClosable={false}
         >
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
         </Modal>

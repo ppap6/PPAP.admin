@@ -331,6 +331,7 @@ class List extends React.Component {
           visible={this.state.modalVisible}
           footer= ''
           onCancel={this.handleModalCancel}
+          maskClosable={false}
         > 
           <h1 align="center">{this.state.modalPost.title}</h1>
           <div className="markdown-body" dangerouslySetInnerHTML={{__html: this.state.modalPost.content}}></div>

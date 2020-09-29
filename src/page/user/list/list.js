@@ -431,6 +431,7 @@ class List extends React.Component {
           visible={this.state.modalVisible}
           footer= ''
           onCancel={this.handleModalCancel}
+          maskClosable={false}
         >
           <Form 
             {...layout} 
