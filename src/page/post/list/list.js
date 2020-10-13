@@ -108,7 +108,7 @@ class List extends React.Component {
     })
   }
 
-  updatePost = (e) => {
+  goUpdatePost = (e) => {
     const post = JSON.parse(e.target.getAttribute('post'))
     if(!window.frontendUrl){
       message.warning('当前在前端部署文件config.js未配置好前端访问地址')
@@ -368,7 +368,7 @@ class List extends React.Component {
         render: (text, record) => (
           <Space size="middle">
             <a post={JSON.stringify(record)} onClick={this.showModal}>查看</a>
-            <a post={JSON.stringify(record)} onClick={this.updatePost}>修改</a>
+            <a post={JSON.stringify(record)} onClick={this.goUpdatePost}>修改</a>
             <a style={{color: "red"}} post={JSON.stringify(record)} onClick={this.deletePost}>拉黑</a>
           </Space>
         ),

@@ -9,7 +9,6 @@ import Login from './page/login/login'
 
 import PostList from './page/post/list/list'
 import PostBlacklist from './page/post/blacklist/blacklist'
-import PostCommentBlacklist from './page/post/comment-blacklist/blacklist'
 
 import TopicList from './page/topic/list/list'
 
@@ -37,7 +36,6 @@ const Inbox = props => (
 
           <Route exact path="/post/list" component={PostList} />
           <Route exact path="/post/blacklist" component={PostBlacklist} />
-          <Route exact path="/post/comment-blacklist" component={PostCommentBlacklist} />
 
           <Route exact path="/topic/list" component={TopicList} />
 

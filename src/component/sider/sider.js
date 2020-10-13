@@ -68,7 +68,6 @@ class Sider extends React.Component {
         >
           <Menu.Item key="/post/list">所有帖子</Menu.Item>
           <Menu.Item key="/post/blacklist">帖子小黑屋</Menu.Item>
-          <Menu.Item key="/post/comment/blacklist">评论小黑屋</Menu.Item>
         </SubMenu>
 
         <SubMenu

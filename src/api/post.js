@@ -23,3 +23,14 @@ export function getPost(id){
 export function deletePost(id){
   return Request.delete(`/post/${id}`)
 }
+
+//修改帖子信息
+export function updatePost(id, data){
+  return Request.put(`/post/${id}`, {
+    title: data.title,
+    content: data.content,
+    md: data.md,
+    topic_id: data.topic_id,
+    status: data.status
+  })
+}
