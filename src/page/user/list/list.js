@@ -34,6 +34,7 @@ class List extends React.Component {
     pageSize: 10,
     total: 0,
     keyword: '',
+    status: 2,
     userList: [],
     modalVisible: false,
     modalUser: {
@@ -72,7 +73,8 @@ class List extends React.Component {
     const data = {
       page_num: this.state.pageNum,
       page_size: this.state.pageSize,
-      keyword: this.state.keyword
+      keyword: this.state.keyword,
+      status: this.state.status
     }
     getUserList(data).then(response => {
       if(response.data.status === 200){
@@ -399,7 +401,7 @@ class List extends React.Component {
         render: (text, record) => (
           <Space size="middle">
             <a user={JSON.stringify(record)} onClick={this.showModal}>查看</a>
-            <a user={JSON.stringify(record)} onClick={this.deleteUser}>拉黑</a>
+            <a style={{color: "red"}} user={JSON.stringify(record)} onClick={this.deleteUser}>拉黑</a>
           </Space>
         ),
       }

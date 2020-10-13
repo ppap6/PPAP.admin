@@ -379,7 +379,7 @@ class List extends React.Component {
           <Space size="middle">
             <a topic={JSON.stringify(record)} onClick={this.showModal}>查看</a>
             {record.sid ? '' : <a topic={JSON.stringify(record)} onClick={this.displaySubTopic}>下级</a>}
-            <a topic={JSON.stringify(record)} onClick={this.deleteTopic}>拉黑</a>
+            <a style={{color: "red"}} topic={JSON.stringify(record)} onClick={this.deleteTopic}>拉黑</a>
           </Space>
         ),
       }
@@ -417,6 +417,9 @@ class List extends React.Component {
                   columns={columns} 
                   dataSource={this.state.subTopicList} 
                   rowKey="id"
+                  pagination={{
+                    position: ['bottomCenter']
+                  }}
                 />
               </div>
             )
