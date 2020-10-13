@@ -1,29 +1,13 @@
 import React from 'react'
-import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, message,Form, Modal, Button } from 'antd'
+import { Table, Avatar, Tag, Tooltip, Space, Input, message, Modal, Button } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { getPostList } from 'api/post'
-import PicturesWall from 'component/upload/userPicturesWall'
+import { getPostList, deletePost } from 'api/post'
 
 import styles from './list.styl'
 import { getPost } from '../../../api/post'
 
 const { Search } = Input
 const { confirm } = Modal
-
-const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
-}
-
-const validateMessages = {
-  required: '${label} is required!',
-  types: {
-    num: '${label} is not a validate number!',
-  },
-  number: {
-    range: '${label} must be between ${min} and ${max}',
-  },
-}
 
 class List extends React.Component {
 
@@ -35,6 +19,7 @@ class List extends React.Component {
     pageSize: 10,
     total: 0,
     keyword: '',
+    status: 2,
     postList: [],
     modalVisible: false,
     modalPost: {
@@ -76,7 +61,8 @@ class List extends React.Component {
     const data = {
       page_num: this.state.pageNum,
       page_size: this.state.pageSize,
-      keyword: this.state.keyword
+      keyword: this.state.keyword,
+      status: this.state.status
     }
     getPostList(data).then(response => {
       if(response.data.status === 200){
@@ -94,6 +80,10 @@ class List extends React.Component {
           pageNum: response.data.message.page_num,
           pageSize: response.data.message.page_size,
           total: response.data.message.total
+        })
+      }else if(response.data.status == 10003){
+        this.setState({
+          postList: []
         })
       }else{
         message.warning(response.data.message)
@@ -115,6 +105,63 @@ class List extends React.Component {
       keyword: value.trim()
     }, () => {
       this.getPostList()
+    })
+  }
+
+  updatePost = (e) => {
+    const post = JSON.parse(e.target.getAttribute('post'))
+    if(!window.frontendUrl){
+      message.warning('当前在前端部署文件config.js未配置好前端访问地址')
+      return 
+    }
+    window.open(`${window.frontendUrl}/#/update-post?id=${post.id}`)
+  }
+
+  goPostDetail = (e) => {
+    if(!window.frontendUrl){
+      message.warning('当前在前端部署文件config.js未配置好前端访问地址')
+      return 
+    }
+    window.open(`${window.frontendUrl}/#/post/${this.state.modalPost.id}`)
+  }
+
+  deletePost = (e) => {
+    const post = JSON.parse(e.target.getAttribute('post'))
+    const that = this
+    confirm({
+      title: '警告',
+      icon: <ExclamationCircleOutlined />,
+      content: `当前操作即将把帖子『${post.title}』关进小黑屋`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk() {
+
+        that.setState({
+          loading: true
+        })
+
+        deletePost(post.id).then(response => {
+          if(response.data.status === 200){
+            message.success(`帖子『${post.title}』成功被关进小黑屋`)
+            that.getPostList()
+          }else{
+            message.warning(response.data.message)
+          }
+          that.setState({
+            loading: true
+          })
+        }).catch(error => {
+          console.log(error)
+          message.error('网络或服务器貌似有问题')
+          that.setState({
+            loading: false
+          })
+        })
+
+      },
+      onCancel() {
+        message.info(`帖子『${post.title}』暂时逃脱关进小黑屋的命运`)
+      }
     })
   }
 
@@ -188,6 +235,9 @@ class List extends React.Component {
         title: '头像',
         dataIndex: 'avatar',
         align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
         render: avatar => (
           <Avatar src={avatar} />
         ),
@@ -292,13 +342,34 @@ class List extends React.Component {
         )
       },
       {
+        title: '显示状态',
+        dataIndex: 'status',
+        align: 'center',
+        ellipsis: {
+          showTitle: false
+        },
+        render: (status, record) => {
+          if(record.status === 1){
+            return (
+              <Tag color="green">正常</Tag>
+            )
+          }else{
+            return (
+              <Tag color="gray">小黑屋</Tag>
+            )
+          }  
+        }
+      },
+      {
         title: '操作',
         dataIndex: 'action',
         align: 'center',
+        width: 150,
         render: (text, record) => (
           <Space size="middle">
             <a post={JSON.stringify(record)} onClick={this.showModal}>查看</a>
-            <a post={JSON.stringify(record)}>拉黑</a>
+            <a post={JSON.stringify(record)} onClick={this.updatePost}>修改</a>
+            <a style={{color: "red"}} post={JSON.stringify(record)} onClick={this.deletePost}>拉黑</a>
           </Space>
         ),
       }
@@ -334,7 +405,8 @@ class List extends React.Component {
           maskClosable={false}
         > 
           <h1 align="center">{this.state.modalPost.title}</h1>
-          <div className="markdown-body" dangerouslySetInnerHTML={{__html: this.state.modalPost.content}}></div>
+          <div className={styles.markdownBody} dangerouslySetInnerHTML={{__html: this.state.modalPost.content}}></div>
+          <Button className={styles.commentButton} type="primary" onClick={this.goPostDetail}>查看评论</Button>
         </Modal>
       </>
     )

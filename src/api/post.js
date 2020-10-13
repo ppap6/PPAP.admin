@@ -8,7 +8,8 @@ export function getPostList(data){
       page_size: data.page_size,
       topic_id: data.topic_id,
       sort: data.sort,
-      keyword: data.keyword
+      keyword: data.keyword,
+      status: data.status
     }
   })
 }
@@ -16,4 +17,9 @@ export function getPostList(data){
 //获取帖子信息
 export function getPost(id){
   return Request.get(`/post/${id}`)
+}
+
+//删除帖子
+export function deletePost(id){
+  return Request.delete(`/post/${id}`)
 }
