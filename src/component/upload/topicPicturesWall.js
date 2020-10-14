@@ -37,6 +37,8 @@ class PicturesWall extends React.Component {
           url: props.topic.icon
         }
       ]
+    }else{
+      this.state.fileList = []
     }
   }
 
@@ -50,6 +52,11 @@ class PicturesWall extends React.Component {
             url: props.topic.icon
           }
         ]
+      })
+    }else{
+      this.setState({
+        previewImage: '',
+        fileList: []
       })
     }
   }

@@ -199,7 +199,6 @@ class List extends React.Component {
 
   handleModalCancel = () => {
     this.setState({
-      modalVisible: false,
       modalTopic: {
         id: 0,
         name: '',
@@ -210,7 +209,11 @@ class List extends React.Component {
         posts: 0,
         followers: 0,
         status: 0
-      },
+      }
+    }, () => {
+      this.setState({
+        modalVisible: false
+      })
     })
   }
 
@@ -244,7 +247,6 @@ class List extends React.Component {
     this.state.modalTopic.intro = valueObj.intro
     this.state.modalTopic.num = valueObj.num
     this.state.modalTopic.status = valueObj.status
-    console.log(valueObj.status)
 
     this.updateTopic() 
   }
@@ -311,7 +313,6 @@ class List extends React.Component {
   updateTopic = () => {
     const topicId = this.state.modalTopic.id
     const topicData = this.state.modalTopic
-    console.log(topicData)
     updateTopic(topicId, topicData).then(response => {
       if(response.data.status === 200){
         message.success('修改话题成功')
