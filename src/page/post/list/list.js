@@ -369,7 +369,7 @@ class List extends React.Component {
           <Space size="middle">
             <a post={JSON.stringify(record)} onClick={this.showModal}>查看</a>
             <a post={JSON.stringify(record)} onClick={this.goUpdatePost}>修改</a>
-            <a style={{color: "red"}} post={JSON.stringify(record)} onClick={this.deletePost}>拉黑</a>
+            {record.status === 0 ? '' : <a style={{color: "red"}} post={JSON.stringify(record)} onClick={this.deletePost}>拉黑</a>}
           </Space>
         ),
       }

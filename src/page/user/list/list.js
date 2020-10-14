@@ -486,10 +486,11 @@ class List extends React.Component {
         title: '操作',
         dataIndex: 'action',
         align: 'center',
+        width: 120,
         render: (text, record) => (
           <Space size="middle">
             <a user={JSON.stringify(record)} onClick={this.showModal}>查看</a>
-            <a style={{color: "red"}} user={JSON.stringify(record)} onClick={this.deleteUser}>拉黑</a>
+            {record.status === 0 ? '' : <a style={{color: "red"}} user={JSON.stringify(record)} onClick={this.deleteUser}>拉黑</a>}
           </Space>
         ),
       }

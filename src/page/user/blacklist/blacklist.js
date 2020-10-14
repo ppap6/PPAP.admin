@@ -293,7 +293,7 @@ class BlackList extends React.Component {
         align: 'center',
         render: (text, record) => (
           <Space size="middle">
-            <a user={JSON.stringify(record)} onClick={this.updateUser}>释放</a>
+            <a style={{color: "#F2AA24"}} user={JSON.stringify(record)} onClick={this.updateUser}>释放</a>
           </Space>
         ),
       }
