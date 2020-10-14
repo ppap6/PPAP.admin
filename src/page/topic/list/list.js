@@ -244,6 +244,7 @@ class List extends React.Component {
     this.state.modalTopic.intro = valueObj.intro
     this.state.modalTopic.num = valueObj.num
     this.state.modalTopic.status = valueObj.status
+    console.log(valueObj.status)
 
     this.updateTopic() 
   }
@@ -310,6 +311,7 @@ class List extends React.Component {
   updateTopic = () => {
     const topicId = this.state.modalTopic.id
     const topicData = this.state.modalTopic
+    console.log(topicData)
     updateTopic(topicId, topicData).then(response => {
       if(response.data.status === 200){
         message.success('修改话题成功')
@@ -472,7 +474,7 @@ class List extends React.Component {
           <Space size="middle">
             <a topic={JSON.stringify(record)} onClick={this.showModal}>查看</a>
             {record.sid ? '' : <a topic={JSON.stringify(record)} onClick={this.displaySubTopic}>下级</a>}
-            <a style={{color: "red"}} topic={JSON.stringify(record)} onClick={this.deleteTopic}>拉黑</a>
+            {record.status === 0 ? '' : <a style={{color: "red"}} topic={JSON.stringify(record)} onClick={this.deleteTopic}>拉黑</a>}
           </Space>
         ),
       }
@@ -598,6 +600,9 @@ class List extends React.Component {
             </Form.Item>
             <Form.Item name={'intro'} label="简介">
               <Input.TextArea />
+            </Form.Item>
+            <Form.Item name={'status'} label="显示状态" rules={[{ type: 'number', min: 0, max: 1, required: true }]}>
+              <InputNumber />
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
               <Button type="primary" htmlType="submit">保存</Button>
