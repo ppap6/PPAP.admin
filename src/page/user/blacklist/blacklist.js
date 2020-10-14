@@ -96,8 +96,12 @@ class BlackList extends React.Component {
           name: user.name,
           account: user.account,
           title: user.title,
+          signature: user.signature,
+          avatar: user.avatar,
+          bg: user.bg,
           sex: user.sex,
           email: user.email,
+          mobile: user.mobile,
           role_id: user.role_id,
           status: 1
         }
