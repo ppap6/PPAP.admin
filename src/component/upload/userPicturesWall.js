@@ -16,8 +16,6 @@ class PicturesWall extends React.Component {
   constructor(props){
     super(props)
 
-    console.log(props)
-
     this.state = {
       previewVisible: false,
       previewImage: this.props.type === 'avatar' ? this.props.user.avatar : this.props.user.bg, 

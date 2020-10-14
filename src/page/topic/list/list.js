@@ -1,7 +1,7 @@
 import React from 'react'
 import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, Form, Button, message, Modal } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { getTopicList, updateTopic, deleteTopic } from 'api/topic'
+import { getTopicList, addTopic, updateTopic, deleteTopic } from 'api/topic'
 import PicturesWall from 'component/upload/topicPicturesWall'
 
 import styles from './list.styl'
@@ -26,6 +26,7 @@ const validateMessages = {
 class List extends React.Component {
 
   formRef = React.createRef()
+  newFormRef = React.createRef()
 
   state = {
     loading: false,
@@ -37,6 +38,7 @@ class List extends React.Component {
     currentTopicName: '',
     displaySubTopic: false,
     subTopicList: [],
+    //话题详情表单
     modalVisible: false,
     modalTopic: {
       id: 0,
@@ -48,6 +50,16 @@ class List extends React.Component {
       posts: 0,
       followers: 0,
       status: 0
+    },
+    //新增话题表单
+    newModalVisible: false,
+    newModalTopic: {
+      name: '',
+      sid: 0,
+      intro: '',
+      icon: '',
+      num: 0,
+      status: 1
     }
   }
 
@@ -177,46 +189,121 @@ class List extends React.Component {
     })
   }
 
-  handleModalCancel = () => {
+  showNewModal = (e) => {
+    const addTopicSid = e.currentTarget.dataset.type === 'level1' ? 0 : this.state.currentTopicId
+    this.state.newModalTopic.sid = addTopicSid
     this.setState({
-      modalVisible: false
+      newModalVisible: true
     })
   }
 
-  //表单验证成功后触发
+  handleModalCancel = () => {
+    this.setState({
+      modalVisible: false,
+      modalTopic: {
+        id: 0,
+        name: '',
+        sid: 0,
+        intro: '',
+        icon: '',
+        num: 0,
+        posts: 0,
+        followers: 0,
+        status: 0
+      },
+    })
+  }
+
+  handleNewModalok = () => {
+    //调用表单提交功能
+    this.newFormRef.current.submit()
+  }
+
+  handleNewModalCancel = () => {
+    this.setState({
+      newModalVisible: false,
+      newModalTopic: {
+        name: '',
+        sid: 0,
+        intro: '',
+        icon: '',
+        num: 0
+      }
+    })
+  }
+
+  //详情表单验证成功后触发
   onFinish = () => {
-    // console.log(this.formRef.current.getFieldsValue({
-    //   name: '',
-    //   intro: '',
-    //   num: 0,
-    //   status: 0
-    // }))
     const valueObj = this.formRef.current.getFieldsValue({
       name: '',
       intro: '',
       num: 0,
       status: 0
     })
-    let modalTopic = this.state.modalTopic
-    modalTopic.name = valueObj.name
-    modalTopic.intro = valueObj.intro
-    modalTopic.num = valueObj.num
-    modalTopic.status = valueObj.status
-    this.setState({
-      modalVisible: false,
-      modalTopic
-    }, () => {
-      this.updateTopic()
+    this.state.modalTopic.name = valueObj.name
+    this.state.modalTopic.intro = valueObj.intro
+    this.state.modalTopic.num = valueObj.num
+    this.state.modalTopic.status = valueObj.status
+
+    this.updateTopic() 
+  }
+
+  //新增表单验证成功后触发
+  onFinishForNew = () => {
+    const valueObj = this.newFormRef.current.getFieldsValue({
+      name: '',
+      intro: '',
+      num: 0
     })
+    this.state.newModalTopic.name = valueObj.name
+    this.state.newModalTopic.intro = valueObj.intro
+    this.state.newModalTopic.num = valueObj.num
+
+    this.addTopic()
   }
 
   //子组件传递选中图片base64
   emitBase64 = (base64) => {
     // console.log(base64)
-    let modalTopic = this.state.modalTopic
-    modalTopic.icon = base64
-    this.setState({
-      modalTopic
+    if(this.state.modalVisible){
+      let modalTopic = this.state.modalTopic
+      modalTopic.icon = base64
+      this.setState({
+        modalTopic
+      })
+    }else{
+      this.state.newModalTopic.icon = base64
+    }
+  }
+
+  addTopic = () => {
+    const topicData = {
+      name: this.state.newModalTopic.name,
+      sid: this.state.newModalTopic.sid,
+      intro: this.state.newModalTopic.intro,
+      icon: this.state.newModalTopic.icon,
+      num: this.state.newModalTopic.num
+    }
+    addTopic(topicData).then(response => {
+      if(response.data.status === 200){
+        message.success('新增话题成功')
+        this.setState({
+          newModalVisible: false,
+          newModalTopic: {
+            name: '',
+            sid: 0,
+            intro: '',
+            icon: '',
+            num: 0
+          }
+        })
+        this.getTopicList()
+      }else{
+        message.warning(response.data.message)
+      }
+    }).catch(error => {
+      console.log(error)
+      message.error('网络或服务器貌似有问题')
     })
   }
 
@@ -226,10 +313,16 @@ class List extends React.Component {
     updateTopic(topicId, topicData).then(response => {
       if(response.data.status === 200){
         message.success('修改话题成功')
+        this.setState({
+          modalVisible: false
+        })
         this.getTopicList()
       }else{
         message.warning(response.data.message)
       }
+    }).catch(error => {
+      console.log(error)
+      message.error('网络或服务器貌似有问题')
     })
   }
 
@@ -385,10 +478,13 @@ class List extends React.Component {
       }
     ]
 
+    //新增话题类型字符串提示
+    const topicTypeTipsStr = this.state.newModalTopic.sid === 0 ? '新增一级话题' : `新增【${this.state.currentTopicName}】的二级话题`
+
     return (
       <>
         <div className={styles.container}>
-          <div className={styles.header}>一级话题</div>
+          <div className={styles.header}>一级话题<Button className={styles.addBth} type="primary" data-type="level1" onClick={this.showNewModal}>新增话题</Button></div>
           <div className={styles.empty}></div>
           <Table 
             className={styles.table}
@@ -410,7 +506,7 @@ class List extends React.Component {
             ?
             (
               <div className={styles.subcontainer}>
-                <div className={styles.header}>【{this.state.currentTopicName}】的二级话题</div>
+                <div className={styles.header}>【{this.state.currentTopicName}】的二级话题<Button className={styles.addBth} type="primary" data-type="level2" onClick={this.showNewModal}>新增话题</Button></div>
                 <div className={styles.empty}></div>
                 <Table 
                   className={styles.table}
@@ -430,6 +526,39 @@ class List extends React.Component {
         </div>
 
         <Modal
+          title={topicTypeTipsStr}
+          visible={this.state.newModalVisible}
+          // footer= ''
+          okText="确定"
+          onOk={this.handleNewModalok}
+          cancelText="取消"
+          onCancel={this.handleNewModalCancel}
+          maskClosable={false}
+        >
+          <Form 
+            {...layout} 
+            name="new-modal" 
+            onFinish={this.onFinishForNew} 
+            validateMessages={validateMessages}
+            initialValues={this.state.newModalTopic}
+            ref={this.newFormRef}
+          >
+            <Form.Item name={'name'} label="名称" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item name={'num'} label="序号" rules={[{ type: 'number', min: 0, max: 99, required: true }]}>
+              <InputNumber />
+            </Form.Item>
+            <Form.Item name={'icon'} label="图标">
+              <PicturesWall emitBase64={this.emitBase64} type="add" topic={this.state.newModalTopic} />
+            </Form.Item>
+            <Form.Item name={'intro'} label="简介">
+              <Input.TextArea />
+            </Form.Item>
+          </Form>
+        </Modal>
+
+        <Modal
           title="话题详情"
           visible={this.state.modalVisible}
           footer= ''
@@ -438,7 +567,7 @@ class List extends React.Component {
         >
           <Form 
             {...layout} 
-            name="nest-messages" 
+            name="detail-modal" 
             onFinish={this.onFinish} 
             validateMessages={validateMessages}
             initialValues={this.state.modalTopic}
@@ -469,9 +598,6 @@ class List extends React.Component {
             </Form.Item>
             <Form.Item name={'intro'} label="简介">
               <Input.TextArea />
-            </Form.Item>
-            <Form.Item name={'status'} label="显示状态" rules={[{ type: 'number', min: 0, max: 1, required: true }]}>
-              <InputNumber />
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
               <Button type="primary" htmlType="submit">保存</Button>

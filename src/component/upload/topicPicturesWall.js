@@ -16,6 +16,8 @@ class PicturesWall extends React.Component {
   constructor(props){
     super(props)
 
+    console.log(props)
+
     this.state = {
       previewVisible: false,
       previewImage: this.props.topic.icon,
@@ -96,16 +98,30 @@ class PicturesWall extends React.Component {
     );
     return (
       <div className="clearfix">
-        <Upload
-          // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          listType="picture-card"
-          fileList={fileList}
-          onPreview={this.handlePreview}
-          onChange={this.handleChange}
-          customRequest={this.customUploadPicture}
-        >
-          {fileList.length >= 1 ? null : uploadButton}
-        </Upload>
+        {
+          this.props.type === 'add' ? 
+          (
+            <Upload
+              listType="picture-card"
+              onPreview={this.handlePreview}
+              onChange={this.handleChange}
+              customRequest={this.customUploadPicture}
+            >
+              {fileList.length >= 1 ? null : uploadButton}
+            </Upload>
+          ) :
+          (
+            <Upload
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={this.handlePreview}
+              onChange={this.handleChange}
+              customRequest={this.customUploadPicture}
+            >
+              {fileList.length >= 1 ? null : uploadButton}
+            </Upload>
+          )
+        }
         <Modal
           visible={previewVisible}
           title={previewTitle}

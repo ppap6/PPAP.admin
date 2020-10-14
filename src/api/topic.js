@@ -25,3 +25,14 @@ export function updateTopic(id, data){
     status: data.status
   })
 }
+
+//新增话题
+export function addTopic(data){
+  return Request.post('/topic/add', {
+    name: data.name,
+    sid: data.sid,
+    intro: data.intro,
+    icon: data.icon,
+    num: data.num
+  })
+}

@@ -5,6 +5,8 @@
   overflow auto
 
   .header {
+    position relative
+    width calc(100% - 34px)
     padding-left 10px
     margin-left 20px
     margin-top 20px
@@ -12,6 +14,11 @@
     font-size 16px
     font-weight 300
     color #212121
+
+    .addBth {
+      position absolute
+      right 10px
+    }
   }
 
   .empty {
@@ -29,13 +36,14 @@
     height 100%
     width 100%
     overflow auto
-    // position absolute
     top 0
     left 0
     z-index 9990
     background-color: #EAEDF0
 
     .header {
+      position relative
+      width calc(100% - 34px)
       padding-left 10px
       margin-left 20px
       margin-top 20px
@@ -43,6 +51,11 @@
       font-size 16px
       font-weight 300
       color #212121
+
+      .addBth {
+        position absolute
+        right 10px
+      }
     }
 
     .empty {
@@ -55,5 +68,12 @@
       padding 0 15px
       overflow hidden
     }
+  }
+}
+
+.ant-modal-root {
+  .submitAddBtn {
+    display inline-block
+    margin-left 200px !important
   }
 }
