@@ -41,3 +41,13 @@ export function updateUser(id, data){
     status: data.status
   })
 }
+
+//新增用户
+export function addUser(data){
+  return Request.post('user', {
+    name: data.name,
+    email: data.email,
+    password: data.password,
+    role_id: data.role_id
+  })
+}

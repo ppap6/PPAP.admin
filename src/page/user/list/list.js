@@ -1,8 +1,10 @@
 import React from 'react'
 import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, message,Form, Modal, Button } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { getUserList, updateUser, deleteUser } from 'api/user'
+import { getUserList, addUser, updateUser, deleteUser } from 'api/user'
 import PicturesWall from 'component/upload/userPicturesWall'
+import sha1 from 'crypto-js/sha1'
+import md5 from 'crypto-js/md5'
 
 import styles from './list.styl'
 
@@ -16,17 +18,18 @@ const layout = {
 
 const validateMessages = {
   required: '${label} is required!',
-  types: {
-    num: '${label} is not a validate number!',
-  },
   number: {
     range: '${label} must be between ${min} and ${max}',
   },
+  email: {
+    pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/,
+  }
 }
 
 class List extends React.Component {
 
   formRef = React.createRef()
+  newFormRef = React.createRef()
 
   state = {
     loading: false,
@@ -36,6 +39,7 @@ class List extends React.Component {
     keyword: '',
     status: 2,
     userList: [],
+    //用户详情表单
     modalVisible: false,
     modalUser: {
       id: 0,
@@ -51,6 +55,14 @@ class List extends React.Component {
       role_id: 0,
       role_name: '',
       status: 0
+    },
+    //新增用户表单
+    newModalVisible: false,
+    newModalUser: {
+      name: '',
+      email: '',
+      password: '',
+      role_id: 5
     }
   }
 
@@ -168,20 +180,47 @@ class List extends React.Component {
     })
   }
 
-  handleModalCancel = () => {
+  showNewModal = () => {
     this.setState({
-      modalVisible: false
+      newModalVisible: true
     })
   }
 
-  //表单验证成功后触发
+  handleModalCancel = () => {
+    this.setState({
+      modalVisible: false,
+      modalUser: {
+        id: 0,
+        name: '',
+        account: '',
+        avatar: '',
+        bg: '',
+        title: '',
+        signature: '',
+        sex: 0,
+        email: '',
+        mobile: '',
+        role_id: 0,
+        role_name: '',
+        status: 0
+      }
+    })
+  }
+
+  handleNewModalCancel = () => {
+    this.setState({
+      newModalVisible: false,
+      newModalUser: {
+        name: '',
+        email: '',
+        password: '',
+        role_id: 5
+      }
+    })
+  }
+
+  //详情表单验证成功后触发
   onFinish = () => {
-    // console.log(this.formRef.current.getFieldsValue({
-    //   name: '',
-    //   intro: '',
-    //   num: 0,
-    //   status: 0
-    // }))
     const valueObj = this.formRef.current.getFieldsValue({
       name: '',
       email: '',
@@ -204,10 +243,29 @@ class List extends React.Component {
     modalUser.role_id = valueObj.role_id
     modalUser.status = valueObj.status
     this.setState({
-      modalVisible: false,
       modalUser
     }, () => {
       this.updateUser()
+    })
+  }
+
+  //新表单验证成功后触发
+  onFinishForNew = () => {
+    const valueObj = this.newFormRef.current.getFieldsValue({
+      name: '',
+      email: '',
+      password: '',
+      role_id: 5,
+    })
+    let newModalUser = this.state.newModalUser
+    newModalUser.name = valueObj.name
+    newModalUser.email = valueObj.email 
+    newModalUser.password = valueObj.password 
+    newModalUser.role_id = valueObj.role_id
+    this.setState({
+      newModalUser
+    }, () => {
+      this.addUser()
     })
   }
 
@@ -231,6 +289,36 @@ class List extends React.Component {
     updateUser(userId, userData).then(response => {
       if(response.data.status === 200){
         message.success('修改用户成功')
+        this.setState({
+          modalVisible: false
+        })
+        this.getUserList()
+      }else{
+        message.warning(response.data.message)
+      }
+    })
+  }
+
+  addUser = () => {
+    let password = this.state.newModalUser.password.trim().length == 0 ? '123456' : this.state.newModalUser.password.trim()
+    const userData = {
+      name: this.state.newModalUser.name,
+      email: this.state.newModalUser.email,
+      password: md5(sha1(password).toString()).toString(),
+      role_id: this.state.newModalUser.role_id
+    }
+    addUser(userData).then(response => {
+      if(response.data.status === 200){
+        message.success('新增用户成功')
+        this.setState({
+          newModalVisible: false,
+          newModalUser: {
+            name: '',
+            email: '',
+            password: '',
+            role_id: 5
+          }
+        })
         this.getUserList()
       }else{
         message.warning(response.data.message)
@@ -412,6 +500,7 @@ class List extends React.Component {
         <div className={styles.container}>
           <div className={styles.header}>所有用户</div>
           <Search className={styles.search} placeholder="请输入昵称" onSearch={value => {this.search(value)}} enterButton />
+          <Button className={styles.addBth} type="primary" onClick={this.showNewModal}>新增用户</Button>
           <Table 
             className={styles.table}
             columns={columns} 
@@ -429,6 +518,39 @@ class List extends React.Component {
         </div>
 
         <Modal
+          title="新增用户"
+          visible={this.state.newModalVisible}
+          footer= ''
+          onCancel={this.handleNewModalCancel}
+          maskClosable={false}
+        >
+          <Form 
+            {...layout} 
+            name="new-modal" 
+            onFinish={this.onFinishForNew} 
+            validateMessages={validateMessages}
+            initialValues={this.state.newModalUser}
+            ref={this.newFormRef}
+          >
+            <Form.Item name={'name'} label="名称" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item name={'email'} label="邮箱" rules={[{ required: true, type: 'email' }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item name={'password'} label="密码">
+              <Input placeholder="默认为 123456" />
+            </Form.Item>
+            <Form.Item name={'role_id'} label="角色类型" rules={[{ type: 'number', min: 1, max: 5, required: true }]}>
+              <InputNumber />
+            </Form.Item>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
+              <Button type="primary" htmlType="submit">确定</Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+
+        <Modal
           title="用户详情"
           visible={this.state.modalVisible}
           footer= ''
@@ -437,7 +559,7 @@ class List extends React.Component {
         >
           <Form 
             {...layout} 
-            name="nest-messages" 
+            name="detail-modal" 
             onFinish={this.onFinish} 
             validateMessages={validateMessages}
             initialValues={this.state.modalUser}
