@@ -129,9 +129,17 @@ class List extends React.Component {
             }
           }else{
             message.warning(response.data.message)
+            that.setState({
+              loading: false
+            })
+            return
           }
         }).catch(error => {
           message.error('网络或服务器貌似有问题')
+          that.setState({
+            loading: false
+          })
+          return
         })
 
         updatePost(post.id, data).then(response => {
