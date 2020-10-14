@@ -114,7 +114,7 @@ class BlackList extends React.Component {
             message.warning(response.data.message)
           }
           that.setState({
-            loading: true
+            loading: false
           })
         }).catch(error => {
           console.log(error)
