@@ -9,3 +9,11 @@ export function getRoleList(data){
     }
   })
 }
+
+//修改角色信息
+export function updateRole(id, data){
+  return Request.put(`/role/${id}`, {
+    name: data.name,
+    description: data.description
+  })
+}

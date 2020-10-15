@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table, Tag, Tooltip, Space, Input, message, Form, Modal, Button } from 'antd'
-import { getRoleList } from 'api/role'
+import { getRoleList, updateRole } from 'api/role'
 
 import styles from './role.styl'
 
@@ -98,6 +98,43 @@ class List extends React.Component {
         create_time: '',
         update_time: '',
         description: ''
+      }
+    })
+  }
+
+  //详情表单验证成功后触发
+  onFinish = () => {
+    const valueObj = this.formRef.current.getFieldsValue({
+      id: 0,
+      name: '',
+      create_time: '',
+      update_time: '',
+      description: ''
+    })
+    let modalRole = this.state.modalRole
+    modalRole.name = valueObj.name
+    modalRole.create_time = valueObj.create_time
+    modalRole.update_time = valueObj.update_time
+    modalRole.description = valueObj.description
+    this.setState({
+      modalRole
+    }, () => {
+      this.updateRole()
+    })
+  }
+
+  updateRole = () => {
+    const roleId = this.state.modalRole.id
+    const roleData = this.state.modalRole
+    updateRole(roleId, roleData).then(response => {
+      if(response.data.status === 200){
+        message.success('修改角色信息成功')
+        this.setState({
+          modalVisible: false
+        })
+        this.getRoleList()
+      }else{
+        message.warning(response.data.message)
       }
     })
   }
