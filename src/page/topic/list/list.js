@@ -280,6 +280,15 @@ class List extends React.Component {
     }
   }
 
+  //子组件传递清空当前modal的图片数据
+  removePicture = (type) => {
+    if(type === 'add'){
+      this.state.newModalTopic.icon = ''
+    }else{
+      this.state.modalTopic.icon = ''
+    }
+  }
+
   addTopic = () => {
     const topicData = {
       name: this.state.newModalTopic.name,
@@ -554,7 +563,7 @@ class List extends React.Component {
               <InputNumber />
             </Form.Item>
             <Form.Item name={'icon'} label="图标">
-              <PicturesWall emitBase64={this.emitBase64} type="add" topic={this.state.newModalTopic} />
+              <PicturesWall emitBase64={this.emitBase64} removePicture={this.removePicture} type="add" topic={this.state.newModalTopic} />
             </Form.Item>
             <Form.Item name={'intro'} label="简介">
               <Input.TextArea />
@@ -598,7 +607,7 @@ class List extends React.Component {
               <></>
             }
             <Form.Item name={'icon'} label="图标">
-              <PicturesWall emitBase64={this.emitBase64} topic={this.state.modalTopic} />
+              <PicturesWall emitBase64={this.emitBase64} removePicture={this.removePicture} topic={this.state.modalTopic} />
             </Form.Item>
             <Form.Item name={'intro'} label="简介">
               <Input.TextArea />

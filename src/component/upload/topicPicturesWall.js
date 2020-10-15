@@ -75,6 +75,10 @@ class PicturesWall extends React.Component {
     });
   };
 
+  handleRemove = () => {
+    this.props.removePicture(this.props.type)
+  }
+
   handleChange = ({ fileList }) => {
     this.setState({ fileList })
   };
@@ -109,6 +113,7 @@ class PicturesWall extends React.Component {
             <Upload
               listType="picture-card"
               onPreview={this.handlePreview}
+              onRemove={this.handleRemove}
               onChange={this.handleChange}
               customRequest={this.customUploadPicture}
             >
@@ -120,6 +125,7 @@ class PicturesWall extends React.Component {
               listType="picture-card"
               fileList={fileList}
               onPreview={this.handlePreview}
+              onRemove={this.handleRemove}
               onChange={this.handleChange}
               customRequest={this.customUploadPicture}
             >

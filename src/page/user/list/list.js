@@ -246,7 +246,7 @@ class List extends React.Component {
     this.setState({
       modalUser
     }, () => {
-      // this.updateUser()
+      this.updateUser()
     })
   }
 
@@ -282,6 +282,15 @@ class List extends React.Component {
     this.setState({
       modalUser
     })
+  }
+
+  //子组件传递清空当前modal的图片数据
+  removePicture = (type) => {
+    if(type === 'avatar'){
+      this.state.modalUser.avatar = ''
+    }else{
+      this.state.modalUser.bg = ''
+    }
   }
 
   updateUser = () => {
@@ -589,10 +598,10 @@ class List extends React.Component {
               </Select>
             </Form.Item>
             <Form.Item name={'avatar'} label="头像">
-              <PicturesWall emitBase64={this.emitBase64} type="avatar" user={this.state.modalUser} />
+              <PicturesWall emitBase64={this.emitBase64} removePicture={this.removePicture} type="avatar" user={this.state.modalUser} />
             </Form.Item>
             <Form.Item name={'bg'} label="背景">
-              <PicturesWall emitBase64={this.emitBase64} type="bg" user={this.state.modalUser} />
+              <PicturesWall emitBase64={this.emitBase64} removePicture={this.removePicture} type="bg" user={this.state.modalUser} />
             </Form.Item>
             <Form.Item name={'title'} label="个人头衔">
               <Input.TextArea />
