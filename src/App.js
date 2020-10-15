@@ -46,7 +46,7 @@ const Inbox = props => (
           <Route exact path="/user/blacklist" component={UserBlacklist} />
           
           <Route exact path="/role_access/role" component={RoleList} />
-          {/* <Route exact path="/role_access/access" component={AccessList} /> */}
+          <Route exact path="/role_access/access" component={AccessList} />
 
         </div>
 

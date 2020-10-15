@@ -1,0 +1,79 @@
+.container {
+  position relative
+  height 100%
+  width 100%
+  overflow auto
+
+  .header {
+    position relative
+    width calc(100% - 34px)
+    padding-left 10px
+    margin-left 20px
+    margin-top 20px
+    border-left 4px solid #009688
+    font-size 16px
+    font-weight 300
+    color #212121
+
+    .addBth {
+      position absolute
+      right 10px
+    }
+  }
+
+  .empty {
+    display block
+    margin 20px auto
+  }
+
+  .table {
+    width 100%
+    padding 0 15px
+    overflow hidden
+  }
+
+  .subcontainer {
+    height 100%
+    width 100%
+    overflow auto
+    top 0
+    left 0
+    z-index 9990
+    background-color: #EAEDF0
+
+    .header {
+      position relative
+      width calc(100% - 34px)
+      padding-left 10px
+      margin-left 20px
+      margin-top 20px
+      border-left 4px solid #009688
+      font-size 16px
+      font-weight 300
+      color #212121
+
+      .addBth {
+        position absolute
+        right 10px
+      }
+    }
+
+    .empty {
+      display block
+      margin 20px auto
+    }
+
+    .table {
+      width 100%
+      padding 0 15px
+      overflow hidden
+    }
+  }
+}
+
+.ant-modal-root {
+  .submitAddBtn {
+    display inline-block
+    margin-left 200px !important
+  }
+}
