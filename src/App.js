@@ -15,6 +15,9 @@ import TopicList from './page/topic/list/list'
 import UserList from './page/user/list/list'
 import UserBlacklist from './page/user/blacklist/blacklist'
 
+import RoleList from './page/role_access/role/role'
+import AccessList from './page/role_access/access/access'
+
 import './App.css'
 
 
@@ -41,6 +44,9 @@ const Inbox = props => (
 
           <Route exact path="/user/list" component={UserList} />
           <Route exact path="/user/blacklist" component={UserBlacklist} />
+          
+          <Route exact path="/role_access/role" component={RoleList} />
+          {/* <Route exact path="/role_access/access" component={AccessList} /> */}
 
         </div>
 

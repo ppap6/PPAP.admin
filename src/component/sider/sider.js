@@ -69,6 +69,19 @@ class Sider extends React.Component {
           <Menu.Item key="/post/list">所有帖子</Menu.Item>
           <Menu.Item key="/post/blacklist">帖子小黑屋</Menu.Item>
         </SubMenu>
+        
+        <SubMenu
+          key="/role_access"
+          title={
+            <span>
+              <BookOutlined />
+              <span>角色权限</span>
+            </span>
+          }
+        >
+          <Menu.Item key="/role_access/role">角色列表</Menu.Item>
+          <Menu.Item key="/role_access/access">权限列表</Menu.Item>
+        </SubMenu>
       </Menu>
     )
   }
