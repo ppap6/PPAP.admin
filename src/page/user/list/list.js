@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, message,Form, Modal, Button } from 'antd'
+import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, message,Form, Modal, Button, Select } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { getUserList, addUser, updateUser, deleteUser } from 'api/user'
 import PicturesWall from 'component/upload/userPicturesWall'
@@ -10,6 +10,7 @@ import styles from './list.styl'
 
 const { Search } = Input
 const { confirm } = Modal
+const { Option } = Select
 
 const layout = {
   labelCol: { span: 6 },
@@ -245,7 +246,7 @@ class List extends React.Component {
     this.setState({
       modalUser
     }, () => {
-      this.updateUser()
+      // this.updateUser()
     })
   }
 
@@ -542,8 +543,13 @@ class List extends React.Component {
             <Form.Item name={'password'} label="密码">
               <Input placeholder="默认为 123456" />
             </Form.Item>
-            <Form.Item name={'role_id'} label="角色类型" rules={[{ type: 'number', min: 1, max: 5, required: true }]}>
-              <InputNumber />
+            <Form.Item name={'role_id'} label="角色类型" initialvalue={5} rules={[{ type: 'number', min: 1, max: 5, required: true }]}>
+              <Select style={{ width: 120 }}>
+                <Option value={2}>管理员</Option>
+                <Option value={3}>运营</Option>
+                <Option value={4}>版主</Option>
+                <Option value={5}>普通用户</Option>
+              </Select>
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
               <Button type="primary" htmlType="submit">确定</Button>
@@ -576,7 +582,11 @@ class List extends React.Component {
               <Input />
             </Form.Item>
             <Form.Item name={'sex'} label="性别" rules={[{ type: 'number', min: 0, max: 2, required: true }]}>
-              <InputNumber />
+              <Select style={{ width: 100 }}>
+                <Option value={0}>保密</Option>
+                <Option value={1}>男</Option>
+                <Option value={2}>女</Option>
+              </Select>
             </Form.Item>
             <Form.Item name={'avatar'} label="头像">
               <PicturesWall emitBase64={this.emitBase64} type="avatar" user={this.state.modalUser} />
@@ -594,10 +604,18 @@ class List extends React.Component {
               <Input />
             </Form.Item>
             <Form.Item name={'role_id'} label="角色类型" rules={[{ type: 'number', min: 1, max: 5, required: true }]}>
-              <InputNumber />
+              <Select style={{ width: 120 }}>
+                <Option value={2}>管理员</Option>
+                <Option value={3}>运营</Option>
+                <Option value={4}>版主</Option>
+                <Option value={5}>普通用户</Option>
+              </Select>
             </Form.Item>
             <Form.Item name={'status'} label="显示状态" rules={[{ type: 'number', min: 0, max: 1, required: true }]}>
-              <InputNumber />
+              <Select style={{ width: 120 }}>
+                <Option value={1}>正常</Option>
+                <Option value={0}>小黑屋</Option>
+              </Select>
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
               <Button type="primary" htmlType="submit">保存</Button>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, Form, Button, message, Modal } from 'antd'
+import { Table, Avatar, Tag, Tooltip, Space, Input, InputNumber, Form, Button, message, Modal, Select } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { getTopicList, addTopic, updateTopic, deleteTopic } from 'api/topic'
 import PicturesWall from 'component/upload/topicPicturesWall'
@@ -7,6 +7,7 @@ import PicturesWall from 'component/upload/topicPicturesWall'
 import styles from './list.styl'
 
 const { confirm } = Modal
+const { Option } = Select
 
 const layout = {
   labelCol: { span: 6 },
@@ -603,7 +604,10 @@ class List extends React.Component {
               <Input.TextArea />
             </Form.Item>
             <Form.Item name={'status'} label="显示状态" rules={[{ type: 'number', min: 0, max: 1, required: true }]}>
-              <InputNumber />
+              <Select style={{ width: 120 }}>
+                <Option value={1}>显示</Option>
+                <Option value={0}>不显示</Option>
+              </Select>
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
               <Button type="primary" htmlType="submit">保存</Button>
