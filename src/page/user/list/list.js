@@ -209,6 +209,7 @@ class List extends React.Component {
   }
 
   handleNewModalCancel = () => {
+    this.newFormRef.current.resetFields()
     this.setState({
       newModalVisible: false,
       newModalUser: {
@@ -258,16 +259,14 @@ class List extends React.Component {
       password: '',
       role_id: 5,
     })
-    let newModalUser = this.state.newModalUser
-    newModalUser.name = valueObj.name
-    newModalUser.email = valueObj.email 
-    newModalUser.password = valueObj.password 
-    newModalUser.role_id = valueObj.role_id
-    this.setState({
-      newModalUser
-    }, () => {
-      this.addUser()
-    })
+    const data = {
+      name: valueObj.name,
+      email: valueObj.email ,
+      password: valueObj.password ,
+      role_id: valueObj.role_id
+    }
+    
+    this.addUser(data)
   }
 
   //子组件传递选中图片base64
@@ -309,17 +308,19 @@ class List extends React.Component {
     })
   }
 
-  addUser = () => {
-    let password = this.state.newModalUser.password.trim().length == 0 ? '123456' : this.state.newModalUser.password.trim()
+  addUser = (data) => {
+    let password = data.password.trim().length == 0 ? '123456' : this.state.newModalUser.password.trim()
     const userData = {
-      name: this.state.newModalUser.name,
-      email: this.state.newModalUser.email,
+      name: data.name,
+      email: data.email,
       password: md5(sha1(password).toString()).toString(),
       role_id: this.state.newModalUser.role_id
     }
     addUser(userData).then(response => {
       if(response.data.status === 200){
         message.success('新增用户成功')
+        //重置表单的初始值
+        this.newFormRef.current.resetFields()
         this.setState({
           newModalVisible: false,
           newModalUser: {

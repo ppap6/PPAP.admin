@@ -213,6 +213,7 @@ class List extends React.Component {
   }
 
   handleNewModalCancel = () => {
+    this.newFormRef.current.resetFields()
     this.setState({
       newModalVisible: false,
       newModalAccess: {
@@ -249,21 +250,21 @@ class List extends React.Component {
       code: '',
       description: ''
     })
-    this.state.newModalAccess.name = valueObj.name
-    this.state.newModalAccess.code = valueObj.code
-    this.state.newModalAccess.description = valueObj.description
-    //重置表单的初始值
-    console.log(this.newFormRef)
-    this.newFormRef.current.resetFields()
-    // this.addAccess()
+    const data = {
+      name: valueObj.name,
+      code: valueObj.code,
+      description: valueObj.description
+    }
+    
+    this.addAccess(data)
   }
 
-  addAccess = () => {
+  addAccess = (data) => {
     const accessData = {
-      name: this.state.newModalAccess.name,
+      name: data.name,
       sid: this.state.newModalAccess.sid,
-      code: this.state.newModalAccess.code,
-      description: this.state.newModalAccess.description
+      code: data.code,
+      description: data.description
     }
     addAccess(accessData).then(response => {
       if(response.data.status === 200){
@@ -271,7 +272,13 @@ class List extends React.Component {
         //重置表单的初始值
         this.newFormRef.current.resetFields()
         this.setState({
-          newModalVisible: false
+          newModalVisible: false,
+          newModalAccess: {
+            name: '',
+            sid: 0,
+            code: '',
+            description: ''
+          }
         })
         this.getAccessList()
       }else{
