@@ -1,6 +1,7 @@
 import React from 'react'
-import { Table, Tag, Tooltip, Space, Input, message, Form, Modal, Button } from 'antd'
-import { getRoleList, updateRole } from 'api/role'
+import { Table, Tag, Tooltip, Space, Input, message, Form, Modal, Button, Tree } from 'antd'
+import { getRoleList, updateRole, getRoleAccessList, updateRoleAccess } from 'api/role'
+import { getAccessList } from 'api/access'
 
 import styles from './role.styl'
 
@@ -31,11 +32,28 @@ class List extends React.Component {
       create_time: '',
       update_time: '',
       description: ''
-    }
+    },
+    //全部权限列表
+    allAccessList: [],
+    //全部权限对象数组
+    allAccessObjArr: [],
+    //角色的权限列表表单
+    ModalRoleAccessVisible: false,
+    //当前角色的权限列表
+    currentRoleAccessList: [],
+    //当前权限分配的角色信息
+    currentCheckAccessRole: {},
+    //【初始化展示使用，不包含一级节点，以为一级节点选中会使得二级节点全选】当前角色已选中的权限（数组）
+    checkedKeys: [],
+    //【真实id数组，包含一级节点】当前角色已选中的权限（数组）
+    realCheckedKeys: [],
+    //权限分配弹窗
+    roleAccessModalVisible: false
   }
 
   componentDidMount(){
     this.getRoleList()
+    this.getAccessList()
   }
 
   handleTableChange = (pagination) => {
@@ -74,6 +92,57 @@ class List extends React.Component {
       this.setState({
         loading: false
       })
+    })
+  }
+
+  getAccessList = () => {
+    const data = {
+      page_num: 1,
+      page_size: 20
+    }
+    getAccessList(data).then(response => {
+      if(response.data.status === 200){
+        let list = response.data.message.list
+        let newList = []
+        let newObjArr = []
+        for(let i=0; i<list.length; i++){
+          const childList = list[i].child
+          newList.push({
+            title: list[i].name,
+            key: list[i].id,
+            sid: list[i].sid,
+            children: []
+          })
+          newObjArr.push({
+            title: list[i].name,
+            key: list[i].id,
+            sid: list[i].sid
+          })
+          for(let j=0; j<childList.length; j++){
+            newList[i].children.push({
+              title: childList[j].name,
+              key: childList[j].id,
+              sid: childList[j].sid
+            })
+            newObjArr.push({
+              title: childList[j].name,
+              key: childList[j].id,
+              sid: childList[j].sid
+            })
+          }
+        }
+        this.setState({
+          allAccessList: newList,
+          allAccessObjArr: newObjArr
+        })
+      }else if(response.data.status === 10003){
+        message.warning('权限列表数据为空')
+      }else{
+        message.warning(response.data.message)
+      }
+    }).catch(error => {
+      console.log(error)
+      message.error('网络或服务器貌似有问题')
     })
   }
 
@@ -136,6 +205,95 @@ class List extends React.Component {
       }else{
         message.warning(response.data.message)
       }
+    }).catch(error => {
+      console.log(error)
+      message.error('网络或服务器貌似有问题')
+    })
+  }
+
+  //展示角色的权限列表
+  showRoleAccessModal = (e) => {
+    const role = JSON.parse(e.target.getAttribute('role'))
+    this.setState({
+      checkedKeys: [],
+      roleAccessModalVisible: true,
+      currentCheckAccessRole: role
+    })
+    getRoleAccessList(role.id).then(response => {
+      if(response.data.status === 200){
+        const list = response.data.message
+        let checkedKeys = []
+        for(let i=0; i<list.length; i++){
+          const childList = list[i].child
+          // 一级权限不需要放进数组
+          // checkedKeys.push(list[i].id)
+          for(let j=0; j<childList.length; j++){
+            checkedKeys.push(childList[j].id)
+          }
+        }
+        this.setState({
+          currentRoleAccessList: list,
+          checkedKeys
+        })
+      }
+    }).catch(error => {
+      console.log(error)
+      message.error('网络或服务器貌似有问题')
+    })
+  }
+
+  handleRoleAccessModalCancel = () => {
+    this.setState({
+      roleAccessModalVisible: false,
+      currentRoleAccessList: [],
+      checkedKeys: []
+    })
+  }
+
+  //提取出真实要提交的数据，权限id拼接字符串
+  handleRealCheckedKeys = () => {
+    console.log(this.state.checkedKeys)
+    let checkedKeys = this.state.checkedKeys
+    const allAccessObjArr = this.state.allAccessObjArr
+    let arr = checkedKeys
+    for(let i=0; i<checkedKeys.length; i++){
+      for(let j=0; j<allAccessObjArr.length; j++){
+        if(checkedKeys[i] === allAccessObjArr[j].key && allAccessObjArr[j].sid !== 0){
+          arr.push(allAccessObjArr[j].sid)
+        }
+      }
+    }
+    const realArr = [...new Set(arr)]
+    const ids = realArr.join(',')
+    return ids
+  }
+
+  //修改角色权限
+  updateRoleAccess = () => {
+    const ids = this.handleRealCheckedKeys()
+    const roleId = this.state.currentCheckAccessRole.id
+    updateRoleAccess(roleId, ids).then(response => {
+      if(response.data.status === 200){
+        message.success('修改角色权限成功')
+        this.setState({
+          roleAccessModalVisible: false,
+          currentRoleAccessList: [],
+          checkedKeys: []
+        })
+      }else{
+        message.warning(response.data.message)
+      }
+    }).catch(error => {
+      console.log(error)
+      message.error('网络或服务器貌似有问题')
+    })
+  }
+
+  //角色权限选择框触发函数
+  onCheck = (checkedKeys) => {
+    console.log('onCheck', checkedKeys)
+    this.setState({
+      checkedKeys
     })
   }
 
@@ -226,6 +384,7 @@ class List extends React.Component {
         render: (text, record) => (
           <Space size="middle">
             <a role={JSON.stringify(record)} onClick={this.showModal}>查看</a>
+            <a role={JSON.stringify(record)} onClick={this.showRoleAccessModal}>权限分配</a>
           </Space>
         ),
       }
@@ -276,6 +435,30 @@ class List extends React.Component {
               <Button type="primary" htmlType="submit">保存</Button>
             </Form.Item>
           </Form>
+        </Modal>
+        
+        <Modal
+          title="权限分配"
+          visible={this.state.roleAccessModalVisible}
+          okText="保存"
+          onOk={this.updateRoleAccess}
+          cancelText="取消"
+          onCancel={this.handleRoleAccessModalCancel}
+          maskClosable={false}
+        >
+          {
+            this.state.allAccessList.length === 0 
+            ? '' 
+            :  
+            <Tree
+              checkable
+              // checkStrictly
+              defaultExpandAll
+              onCheck={this.onCheck}
+              checkedKeys={this.state.checkedKeys}
+              treeData={this.state.allAccessList}
+            />
+          }
         </Modal>
       </>
     )

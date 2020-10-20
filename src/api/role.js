@@ -17,3 +17,15 @@ export function updateRole(id, data){
     description: data.description
   })
 }
+
+//获取角色权限列表
+export function getRoleAccessList(id){
+  return Request.get(`/role/access/${id}`)
+}
+
+//修改角色权限
+export function updateRoleAccess(id, access_ids){
+  return Request.put(`/role/access/${id}`, {
+    access: access_ids
+  })
+}
