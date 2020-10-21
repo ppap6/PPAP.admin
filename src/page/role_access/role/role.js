@@ -438,7 +438,7 @@ class List extends React.Component {
         </Modal>
         
         <Modal
-          title="权限分配"
+          title={`【${this.state.currentCheckAccessRole.name}】权限分配`}
           visible={this.state.roleAccessModalVisible}
           okText="保存"
           onOk={this.updateRoleAccess}
