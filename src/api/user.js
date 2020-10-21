@@ -51,3 +51,8 @@ export function addUser(data){
     role_id: data.role_id
   })
 }
+
+//获取用户权限列表（用于生成菜单栏）
+export function getUserAuthList(){
+  return Request.get('/user/auth')
+}
